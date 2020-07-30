@@ -1,4 +1,4 @@
-package br.com.matheusCalaca.user.started;
+package br.com.matheusCalaca.user;
 
 import io.quarkus.test.junit.NativeImageTest;
 
