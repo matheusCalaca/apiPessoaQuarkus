@@ -1,5 +1,6 @@
 package br.com.matheusCalaca.user.kafka;
 
+import br.com.matheusCalaca.user.model.UserPerson;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.jboss.resteasy.annotations.SseElementType;
@@ -15,17 +16,15 @@ public class KafkaRest {
 
     @Inject
     @Channel("user-stream")
-    Publisher<String> mensagemConsumer;
+    Publisher<UserPerson> mensagemConsumer;
 
     @Inject
     @Channel("user-stream")
-    Emitter<String> mensagemEmitter;
+    Emitter<UserPerson> mensagemEmitter;
 
     @POST
-    @Path("{mensagem}")
-    public void insertMensagemKafka(@PathParam("mensagem") String mensagem) {
-        System.out.println("generated mensagem");
-        mensagemEmitter.send(mensagem);
+    public void insertMensagemKafka( UserPerson person) {
+        mensagemEmitter.send(person);
     }
 
 
@@ -33,8 +32,7 @@ public class KafkaRest {
     @Path("/stream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @SseElementType("text/plain")
-    public Publisher<String> stream() {
-        System.out.println("reader mensagem");
+    public Publisher<UserPerson> stream() {
         return mensagemConsumer;
     }
 }
