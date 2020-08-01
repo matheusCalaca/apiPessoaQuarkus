@@ -2,6 +2,10 @@ package br.com.matheusCalaca.user;
 
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.services.UserServices;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.jboss.resteasy.annotations.SseElementType;
+import org.reactivestreams.Publisher;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -19,7 +23,6 @@ public class UserResource {
     public String hello() {
         return "hello";
     }
-
 
     @POST
     public void insertUserPersonRest(UserPerson person) {
