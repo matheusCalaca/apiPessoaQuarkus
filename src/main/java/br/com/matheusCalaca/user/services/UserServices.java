@@ -16,4 +16,11 @@ public class UserServices {
     public void insertUser(UserPerson person){
         entityManager.persist(person);
     }
+
+    @Transactional
+    public void updateUser(UserPerson person) {
+        entityManager.persist(person);
+    }
+
+
 }
