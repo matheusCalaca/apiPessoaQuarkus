@@ -21,4 +21,9 @@ public class UserServices {
     public void updateUser(Long id, UserPerson person) {
         UserPerson.update("nome = ?1, cpf = ?2, sobrenome = ?3 where id = ?4", person.getNome(), person.getCpf(), person.getSobrenome(), id);
     }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        UserPerson.deleteById(id);
+    }
 }

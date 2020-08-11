@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -36,5 +37,11 @@ public class UserResource {
     @Path("/{id}")
     public void updateUserPersonRest(@PathParam("id") Long id, @RequestBody UserPerson person) {
         userServices.updateUser(id, person);
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public void deleteUserPersonRest(@PathParam("id") Long id) {
+        userServices.deleteUser(id);
     }
 }
