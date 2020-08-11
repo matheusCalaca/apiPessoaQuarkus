@@ -13,7 +13,12 @@ public class UserServices {
     EntityManager entityManager;
 
     @Transactional
-    public void insertUser(UserPerson person){
+    public void insertUser(UserPerson person) {
         entityManager.persist(person);
+    }
+
+    @Transactional
+    public void updateUser(Long id, UserPerson person) {
+        UserPerson.update("nome = ?1, cpf = ?2, sobrenome = ?3 where id = ?4", person.getNome(), person.getCpf(), person.getSobrenome(), id);
     }
 }

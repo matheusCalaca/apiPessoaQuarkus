@@ -2,13 +2,16 @@ package br.com.matheusCalaca.user;
 
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.services.UserServices;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.jboss.resteasy.annotations.SseElementType;
-import org.reactivestreams.Publisher;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/user")
@@ -25,7 +28,13 @@ public class UserResource {
     }
 
     @POST
-    public void insertUserPersonRest(UserPerson person) {
+    public void insertUserPersonRest(@RequestBody UserPerson person) {
         userServices.insertUser(person);
+    }
+
+    @PUT
+    @Path("/{id}")
+    public void updateUserPersonRest(@PathParam("id") Long id, @RequestBody UserPerson person) {
+        userServices.updateUser(id, person);
     }
 }
