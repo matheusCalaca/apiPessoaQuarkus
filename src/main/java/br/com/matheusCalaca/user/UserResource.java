@@ -47,8 +47,7 @@ public class UserResource {
     public Response  findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf) {
         UserPerson user = null;
         boolean idIsNotNull = id != null;
-        boolean cpfIsNotEmpty = cpf != null &&
-                !cpf.isEmpty();
+        boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
         UserPerson person = null;
 
 
@@ -57,7 +56,6 @@ public class UserResource {
         } else if (cpfIsNotEmpty) {
             person = userServices.findUserByCpf(cpf);
         }
-        System.out.println(person);
         return Response.ok().entity(person).build();
     }
 }
