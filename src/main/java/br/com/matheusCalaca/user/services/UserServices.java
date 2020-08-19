@@ -1,10 +1,12 @@
 package br.com.matheusCalaca.user.services;
 
 import br.com.matheusCalaca.user.model.UserPerson;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 @ApplicationScoped
@@ -25,5 +27,17 @@ public class UserServices {
     @Transactional
     public void deleteUser(Long id) {
         UserPerson.deleteById(id);
+    }
+
+    @Transactional
+    public UserPerson findUserById(Integer id) {
+        UserPerson person = UserPerson.findById(id.longValue());
+        return person;
+    }
+
+    @Transactional
+    public UserPerson findUserByCpf(String cpf) {
+        PanacheQuery<UserPerson> panacheQuery =UserPerson.find("cpf", cpf);
+        return panacheQuery.singleResult();
     }
 }
