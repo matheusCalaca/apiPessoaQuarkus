@@ -2,10 +2,11 @@ package br.com.matheusCalaca.user;
 
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.services.UserServices;
-import io.smallrye.mutiny.Uni;
+import org.apache.http.HttpStatus;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,8 +28,13 @@ public class UserResource {
     UserServices userServices;
 
     @POST
-    public void insertUserPersonRest(@RequestBody UserPerson person) {
-        userServices.insertUser(person);
+    public Response insertUserPersonRest(@Valid @RequestBody UserPerson person) {
+        try {
+            userServices.insertUser(person);
+        }catch (Exception e){
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+        return Response.ok().build();
     }
 
     @PUT
@@ -44,10 +50,11 @@ public class UserResource {
     }
 
     @GET
-    public Response  findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf) {
+    public Response findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         UserPerson user = null;
         boolean idIsNotNull = id != null;
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
+        boolean emailIsNotEmpty = email != null && !email.isEmpty();
         UserPerson person = null;
 
 
@@ -55,7 +62,10 @@ public class UserResource {
             person = userServices.findUserById(id);
         } else if (cpfIsNotEmpty) {
             person = userServices.findUserByCpf(cpf);
+        } else if (emailIsNotEmpty) {
+            person = userServices.findUserByEmail(email);
         }
+
         return Response.ok().entity(person).build();
     }
 }

@@ -40,4 +40,10 @@ public class UserServices {
         PanacheQuery<UserPerson> panacheQuery =UserPerson.find("cpf", cpf);
         return panacheQuery.singleResult();
     }
+
+    @Transactional
+    public UserPerson findUserByEmail(String email) {
+        PanacheQuery<UserPerson> panacheQuery =UserPerson.find("email", email);
+        return panacheQuery.singleResult();
+    }
 }
