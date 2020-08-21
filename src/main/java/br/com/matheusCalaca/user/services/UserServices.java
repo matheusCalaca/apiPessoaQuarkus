@@ -21,7 +21,7 @@ public class UserServices {
 
     @Transactional
     public void updateUser(Long id, UserPerson person) {
-        UserPerson.update("nome = ?1, cpf = ?2, sobrenome = ?3 where id = ?4", person.getNome(), person.getCpf(), person.getSobrenome(), id);
+        UserPerson.update("nome = ?1, cpf = ?2, sobrenome = ?3, email = ?4, dataNascimento = ?5 where id = ?6", person.getNome(), person.getCpf(), person.getSobrenome(), person.getEmail(), person.getDataNascimento(),id);
     }
 
     @Transactional

@@ -28,7 +28,7 @@ public class UserResource {
     UserServices userServices;
 
     @POST
-    public Response insertUserPersonRest(@Valid @RequestBody UserPerson person) {
+    public Response insertUserPersonRest(@Valid UserPerson person) {
         try {
             userServices.insertUser(person);
         }catch (Exception e){
@@ -39,7 +39,7 @@ public class UserResource {
 
     @PUT
     @Path("/{id}")
-    public void updateUserPersonRest(@PathParam("id") Long id, @RequestBody UserPerson person) {
+    public void updateUserPersonRest(@PathParam("id") Long id, @Valid UserPerson person) {
         userServices.updateUser(id, person);
     }
 
