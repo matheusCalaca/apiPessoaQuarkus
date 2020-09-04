@@ -3,7 +3,6 @@ package br.com.matheusCalaca.user;
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.services.UserServices;
 import org.apache.http.HttpStatus;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -31,7 +30,7 @@ public class UserResource {
     public Response insertUserPersonRest(@Valid UserPerson person) {
         try {
             userServices.insertUser(person);
-        }catch (Exception e){
+        } catch (Exception e) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
         return Response.ok().build();
