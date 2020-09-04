@@ -30,7 +30,12 @@ public class UserResource {
     public Response insertUserPersonRest(@Valid UserPerson person) {
         try {
             userServices.insertUser(person);
-        } catch (Exception e) {
+        }
+        catch (IllegalArgumentException e) {
+
+            return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
+        }
+        catch (Exception e) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
         return Response.ok().build();
