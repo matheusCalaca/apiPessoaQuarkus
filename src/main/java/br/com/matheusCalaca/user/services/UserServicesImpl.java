@@ -3,6 +3,7 @@ package br.com.matheusCalaca.user.services;
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.repository.UserRepository;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,6 +39,10 @@ public class UserServicesImpl implements UserServices {
 
         if (person.getNome() == null || person.getNome().isEmpty()) {
             throw new IllegalArgumentException("Nome invalido!");
+        }
+
+        if (new Date().after(person.getDataNascimento())){
+            throw new IllegalArgumentException("Data Nascimento invalido!");
         }
     }
 
