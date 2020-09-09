@@ -13,12 +13,12 @@ import javax.inject.Inject;
 public class UserServicesImpl implements UserServices {
 
     @Inject
-    private UserRepository userRepository;
+    UserRepository userRepository;
     //todo: mover para uma lib
-    public final Pattern VALID_EMAIL_ADDRESS_REGEX =
+    private final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-    public boolean validateEmail(String emailStr) {
+    private boolean validateEmail(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
     }
@@ -41,13 +41,14 @@ public class UserServicesImpl implements UserServices {
             throw new IllegalArgumentException("Nome invalido!");
         }
 
-        if (new Date().after(person.getDataNascimento())){
+        if (person.getDataNascimento() != null && new Date().after(person.getDataNascimento())) {
             throw new IllegalArgumentException("Data Nascimento invalido!");
         }
     }
 
-    public void updateUser(Long id, UserPerson person) {
-        userRepository.updateUser(id, person);
+    public void updateUser(UserPerson person) {
+        validUser(person);
+        userRepository.updateUser(person);
     }
 
     public void deleteUser(Long id) {

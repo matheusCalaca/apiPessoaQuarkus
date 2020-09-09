@@ -30,21 +30,26 @@ public class UserResource {
     public Response insertUserPersonRest(@Valid UserPerson person) {
         try {
             userServices.insertUser(person);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
 
             return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
         return Response.ok().build();
     }
 
     @PUT
-    @Path("/{id}")
-    public void updateUserPersonRest(@PathParam("id") Long id, @Valid UserPerson person) {
-        userServices.updateUser(id, person);
+    public Response updateUserPersonRest(@Valid UserPerson person) {
+        try {
+            userServices.updateUser(person);
+        } catch (IllegalArgumentException e) {
+
+            return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+        return Response.ok().build();
     }
 
     @DELETE

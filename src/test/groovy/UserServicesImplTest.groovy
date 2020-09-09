@@ -1,32 +1,26 @@
 import br.com.matheusCalaca.user.model.UserPerson
 import br.com.matheusCalaca.user.repository.UserRepository
-import br.com.matheusCalaca.user.repository.UserRepositoryImpl
 import br.com.matheusCalaca.user.services.UserServicesImpl
-import org.hamcrest.Matchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.mockito.stubbing.OngoingStubbing
 import spock.lang.Shared
 import spock.lang.Specification
 
 class UserServicesImplTest extends Specification {
-//    @Shared
-//    def servicesImpl = new UserServicesImpl()
 
     @InjectMocks
-    UserServicesImpl servicesImpl;
+    UserServicesImpl servicesImpl
 
     @Mock
-    UserRepositoryImpl userRepository;
+    UserRepository userRepository
 
     @Shared
     def person = new UserPerson()
 
-
     def setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(this)
     }
 
     def "CPF user invalid"() {
@@ -39,7 +33,7 @@ class UserServicesImplTest extends Specification {
         person.setSobrenome("Calaça")
 
         when:
-        servicesImpl.insertUser(person)
+        servicesImpl.validUser(person)
 
         then:
         def error = thrown(expectedException)
@@ -62,7 +56,7 @@ class UserServicesImplTest extends Specification {
         person.setSobrenome("Calaça")
 
         when:
-        servicesImpl.insertUser(person)
+        servicesImpl.validUser(person)
 
         then:
         def error = thrown(expectedException)
@@ -87,7 +81,7 @@ class UserServicesImplTest extends Specification {
         person.setSobrenome("Calaça")
 
         when:
-        servicesImpl.insertUser(person)
+        servicesImpl.validUser(person)
 
         then:
         def error = thrown(expectedException)
@@ -110,7 +104,7 @@ class UserServicesImplTest extends Specification {
         person.setSobrenome("Calaça")
 
         when:
-        servicesImpl.insertUser(person)
+        servicesImpl.validUser(person)
 
         then:
         def error = thrown(expectedException)
@@ -119,7 +113,6 @@ class UserServicesImplTest extends Specification {
         where:
         dataNasimento || expectedException        | expectedMessage
         new Date()    || IllegalArgumentException | 'Data Nascimento invalido!'
-
     }
 
 
@@ -140,11 +133,11 @@ class UserServicesImplTest extends Specification {
         where:
         cpf           | dataNasimento         | email              | nome           | sobrnome
         "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock"
-
+        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock"
     }
 
     UserPerson builderUser(cpf, dataNasimento, email, nome, sobrenome) {
-        person = new UserPerson();
+        person = new UserPerson()
         person.setCpf(cpf)
         person.setDataNascimento(dataNasimento)
         person.setEmail(email)

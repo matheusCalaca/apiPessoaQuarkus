@@ -4,20 +4,20 @@ import br.com.matheusCalaca.user.model.UserPerson;
 
 public interface UserRepository {
 
-    public UserPerson insertUser(UserPerson person);
+    UserPerson insertUser(UserPerson person);
 
 
-    public void updateUser(Long id, UserPerson person);
+    void updateUser(UserPerson person);
 
 
-    public void deleteUser(Long id);
+    void deleteUser(Long id);
 
 
-    public UserPerson findUserById(Integer id);
+    UserPerson findUserById(Integer id);
 
 
-    public UserPerson findUserByCpf(String cpf);
+    UserPerson findUserByCpf(String cpf);
 
 
-    public UserPerson findUserByEmail(String email);
+    UserPerson findUserByEmail(String email);
 }
