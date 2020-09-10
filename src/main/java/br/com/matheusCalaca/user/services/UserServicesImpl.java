@@ -48,6 +48,7 @@ public class UserServicesImpl implements UserServices {
 
     public void updateUser(UserPerson person) {
         validUser(person);
+        findUserByCpf(person.getCpf());
         userRepository.updateUser(person);
     }
 
@@ -56,14 +57,23 @@ public class UserServicesImpl implements UserServices {
     }
 
     public UserPerson findUserById(Integer id) {
+        //todo: pensar na validação para int
         return userRepository.findUserById(id);
     }
 
     public UserPerson findUserByCpf(String cpf) {
+        validaBusca(cpf);
         return userRepository.findUserByCpf(cpf);
     }
 
     public UserPerson findUserByEmail(String email) {
+        validaBusca(email);
         return userRepository.findUserByEmail(email);
+    }
+
+    private void validaBusca(String value) {
+        if(value == null || value.isEmpty() ){
+            throw new IllegalArgumentException("Valor invalido para a ação!");
+        }
     }
 }

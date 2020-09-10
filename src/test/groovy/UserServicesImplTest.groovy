@@ -3,10 +3,13 @@ import br.com.matheusCalaca.user.repository.UserRepository
 import br.com.matheusCalaca.user.services.UserServicesImpl
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import spock.lang.Shared
 import spock.lang.Specification
+
+import javax.persistence.NoResultException
+
+import static org.mockito.Mockito.when
 
 class UserServicesImplTest extends Specification {
 
@@ -122,7 +125,7 @@ class UserServicesImplTest extends Specification {
         def bulidPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome)
 
         when:
-        Mockito.when(userRepository.insertUser(bulidPerson)).thenReturn(bulidPerson)
+        when(userRepository.insertUser(bulidPerson)).thenReturn(bulidPerson)
 
         def personReturn = servicesImpl.insertUser(person)
 
@@ -135,6 +138,82 @@ class UserServicesImplTest extends Specification {
         "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock"
         "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock"
     }
+
+    def "Usuario nao encontrado update"() {
+
+        given:
+        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome)
+
+        when:
+        when(servicesImpl.findUserByCpf("11111111111")).thenThrow(NoResultException)
+
+        servicesImpl.updateUser(buildPerson)
+
+        then:
+        def error = thrown(expectedException)
+        error.message == expectedMessage
+
+        where:
+        cpf           | dataNasimento         | email              | nome           | sobrnome      || expectedException        | expectedMessage
+        "11111111111" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" || NoResultException        | null
+        ""            | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" || IllegalArgumentException | 'CPF invalido!'
+        null          | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" || IllegalArgumentException | 'CPF invalido!'
+        "22222222222" | new Date(1995, 8, 27) | null               | "matheus mock" | "calaça mock" || IllegalArgumentException | 'E-mail invalido!'
+    }
+
+    def "buscar cliente por CPF"() {
+        given:
+        def user = builderUser("11111111111",
+                new Date(1995, 8, 27),
+                "teste@gmail.com",
+                "matheus",
+                "Calaça")
+
+
+        when:
+        if ("22222222222" == cpf) {
+            when(servicesImpl.findUserByCpf(cpf)).thenThrow(NoResultException)
+        }
+        servicesImpl.findUserByCpf(cpf)
+
+        then:
+        def error = thrown(expectedException)
+        error.message == expectedMessage
+
+        where:
+        cpf           || expectedException        | expectedMessage
+        null          || IllegalArgumentException | 'Valor invalido para a ação!'
+        ""            || IllegalArgumentException | 'Valor invalido para a ação!'
+        "22222222222" || NoResultException        | null
+        //todo: adicionar validação para cpf invalido
+
+    }
+
+
+    def "Validação para a busca"() {
+        given:
+        def user = builderUser("11111111111",
+                new Date(1995, 8, 27),
+                "teste@gmail.com",
+                "matheus",
+                "Calaça")
+
+
+        when:
+        servicesImpl.validaBusca(cpf)
+
+        then:
+        def error = thrown(expectedException)
+        error.message == expectedMessage
+
+        where:
+        cpf  || expectedException        | expectedMessage
+        null || IllegalArgumentException | 'Valor invalido para a ação!'
+        ""   || IllegalArgumentException | 'Valor invalido para a ação!'
+        //todo: adicionar validação para cpf invalido
+
+    }
+
 
     UserPerson builderUser(cpf, dataNasimento, email, nome, sobrenome) {
         person = new UserPerson()

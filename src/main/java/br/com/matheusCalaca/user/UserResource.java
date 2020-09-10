@@ -5,6 +5,7 @@ import br.com.matheusCalaca.user.services.UserServices;
 import org.apache.http.HttpStatus;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -66,13 +67,16 @@ public class UserResource {
         boolean emailIsNotEmpty = email != null && !email.isEmpty();
         UserPerson person = null;
 
-
-        if (idIsNotNull) {
-            person = userServices.findUserById(id);
-        } else if (cpfIsNotEmpty) {
-            person = userServices.findUserByCpf(cpf);
-        } else if (emailIsNotEmpty) {
-            person = userServices.findUserByEmail(email);
+        try {
+            if (idIsNotNull) {
+                person = userServices.findUserById(id);
+            } else if (cpfIsNotEmpty) {
+                person = userServices.findUserByCpf(cpf);
+            } else if (emailIsNotEmpty) {
+                person = userServices.findUserByEmail(email);
+            }
+        } catch (NoResultException e) {
+            return Response.status(HttpStatus.SC_NOT_FOUND).entity("Cadastro Não localizado").build();
         }
 
         return Response.ok().entity(person).build();
