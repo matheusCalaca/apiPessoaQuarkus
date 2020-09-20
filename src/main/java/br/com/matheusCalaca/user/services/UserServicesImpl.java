@@ -1,13 +1,14 @@
 package br.com.matheusCalaca.user.services;
 
-import br.com.matheusCalaca.user.model.UserPerson;
-import br.com.matheusCalaca.user.repository.UserRepository;
-
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
+
+import br.com.matheusCalaca.user.model.UserPerson;
+import br.com.matheusCalaca.user.repository.UserRepository;
 
 @ApplicationScoped
 public class UserServicesImpl implements UserServices {
@@ -52,13 +53,12 @@ public class UserServicesImpl implements UserServices {
         userRepository.updateUser(person);
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteUser(id);
-    }
-
-    public UserPerson findUserById(Integer id) {
-        //todo: pensar na validação para int
-        return userRepository.findUserById(id);
+    public void deleteUser(String cpf) {
+        UserPerson person = findUserByCpf(cpf);
+        if (person == null) {
+            throw new NotFoundException();
+        }
+        userRepository.deleteUser(person.id);
     }
 
     public UserPerson findUserByCpf(String cpf) {
@@ -72,7 +72,7 @@ public class UserServicesImpl implements UserServices {
     }
 
     private void validaBusca(String value) {
-        if(value == null || value.isEmpty() ){
+        if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("Valor invalido para a ação!");
         }
     }

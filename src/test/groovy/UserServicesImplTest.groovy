@@ -139,7 +139,7 @@ class UserServicesImplTest extends Specification {
         "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock"
     }
 
-    def "Usuario nao encontrado update"() {
+    def "Teste update"() {
 
         given:
         def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome)
@@ -161,6 +161,26 @@ class UserServicesImplTest extends Specification {
         "22222222222" | new Date(1995, 8, 27) | null               | "matheus mock" | "calaça mock" || IllegalArgumentException | 'E-mail invalido!'
     }
 
+    def "Teste DELETE"() {
+        
+        when:
+        when(servicesImpl.findUserByCpf("11111111111")).thenThrow(NoResultException)
+
+        servicesImpl.deleteUser(cpf)
+
+        then:
+        def error = thrown(expectedException)
+        error.message == expectedMessage
+
+        where:
+        cpf           || expectedException        | expectedMessage
+        "11111111111" || NoResultException        | null
+        ""            || IllegalArgumentException | 'CPF invalido!'
+        null          || IllegalArgumentException | 'CPF invalido!'
+
+    }
+
+
     def "buscar cliente por CPF"() {
         given:
         def user = builderUser("11111111111",
@@ -171,7 +191,7 @@ class UserServicesImplTest extends Specification {
 
 
         when:
-        if ("22222222222" == cpf) {
+        if ("11111111111" == cpf) {
             when(servicesImpl.findUserByCpf(cpf)).thenThrow(NoResultException)
         }
         servicesImpl.findUserByCpf(cpf)
@@ -184,7 +204,7 @@ class UserServicesImplTest extends Specification {
         cpf           || expectedException        | expectedMessage
         null          || IllegalArgumentException | 'Valor invalido para a ação!'
         ""            || IllegalArgumentException | 'Valor invalido para a ação!'
-        "22222222222" || NoResultException        | null
+        "11111111111" || NoResultException        | null
         //todo: adicionar validação para cpf invalido
 
     }

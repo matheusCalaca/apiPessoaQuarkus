@@ -32,7 +32,6 @@ public class UserResource {
         try {
             userServices.insertUser(person);
         } catch (IllegalArgumentException e) {
-
             return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
         } catch (Exception e) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -54,23 +53,19 @@ public class UserResource {
     }
 
     @DELETE
-    @Path("/{id}")
-    public void deleteUserPersonRest(@PathParam("id") Long id) {
-        userServices.deleteUser(id);
+    public void deleteUserPersonRest(@QueryParam("cpf") String cpf) {
+        userServices.deleteUser(cpf);
     }
 
     @GET
     public Response findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         UserPerson user = null;
-        boolean idIsNotNull = id != null;
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
         boolean emailIsNotEmpty = email != null && !email.isEmpty();
         UserPerson person = null;
 
         try {
-            if (idIsNotNull) {
-                person = userServices.findUserById(id);
-            } else if (cpfIsNotEmpty) {
+             if (cpfIsNotEmpty) {
                 person = userServices.findUserByCpf(cpf);
             } else if (emailIsNotEmpty) {
                 person = userServices.findUserByEmail(email);

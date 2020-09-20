@@ -10,9 +10,8 @@ public interface UserServices {
 
     void updateUser(UserPerson person);
 
-    void deleteUser(Long id);
+    void deleteUser(String  cpf);
 
-    UserPerson findUserById(Integer id);
 
     UserPerson findUserByCpf(String cpf);
 
