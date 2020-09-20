@@ -162,7 +162,7 @@ class UserServicesImplTest extends Specification {
     }
 
     def "Teste DELETE"() {
-        
+
         when:
         when(servicesImpl.findUserByCpf("11111111111")).thenThrow(NoResultException)
 
@@ -175,20 +175,13 @@ class UserServicesImplTest extends Specification {
         where:
         cpf           || expectedException        | expectedMessage
         "11111111111" || NoResultException        | null
-        ""            || IllegalArgumentException | 'CPF invalido!'
-        null          || IllegalArgumentException | 'CPF invalido!'
+        ""            || IllegalArgumentException | 'Valor invalido para a ação!'
+        null          || IllegalArgumentException | 'Valor invalido para a ação!'
 
     }
 
 
     def "buscar cliente por CPF"() {
-        given:
-        def user = builderUser("11111111111",
-                new Date(1995, 8, 27),
-                "teste@gmail.com",
-                "matheus",
-                "Calaça")
-
 
         when:
         if ("11111111111" == cpf) {
@@ -210,14 +203,7 @@ class UserServicesImplTest extends Specification {
     }
 
 
-    def "Validação para a busca"() {
-        given:
-        def user = builderUser("11111111111",
-                new Date(1995, 8, 27),
-                "teste@gmail.com",
-                "matheus",
-                "Calaça")
-
+    def "Validacao para a busca"() {
 
         when:
         servicesImpl.validaBusca(cpf)

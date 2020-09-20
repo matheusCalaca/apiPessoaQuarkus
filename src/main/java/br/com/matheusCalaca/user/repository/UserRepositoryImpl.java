@@ -1,12 +1,12 @@
 package br.com.matheusCalaca.user.repository;
 
-import br.com.matheusCalaca.user.model.UserPerson;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+
+import br.com.matheusCalaca.user.model.UserPerson;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
 @ApplicationScoped
 public class UserRepositoryImpl implements UserRepository {
