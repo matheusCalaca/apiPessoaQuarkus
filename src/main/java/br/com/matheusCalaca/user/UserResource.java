@@ -1,5 +1,9 @@
 package br.com.matheusCalaca.user;
 
+import static br.com.matheusCalaca.user.model.RoleEnum.USER;
+
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.validation.Valid;
@@ -14,9 +18,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import br.com.matheusCalaca.user.DTO.AuthRequestDto;
+import br.com.matheusCalaca.user.DTO.AuthResponseDto;
+import br.com.matheusCalaca.user.JWT.PBKDF2Encoder;
+import br.com.matheusCalaca.user.JWT.TokenUteis;
+import br.com.matheusCalaca.user.model.RoleEnum;
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.services.UserServices;
 import org.apache.http.HttpStatus;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Path("/user")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -25,8 +35,30 @@ public class UserResource {
 
     @Inject
     UserServices userServices;
+    @Inject
+    PBKDF2Encoder passwordEncoder;
+
+    @ConfigProperty(name = "br.com.matheuscalaca.quarkusjwt.jwt.duration") public Long duration;
+    @ConfigProperty(name = "mp.jwt.verify.issuer") public String issuer;
+
+    @PermitAll
+    @POST @Path("/login") @Produces(MediaType.APPLICATION_JSON)
+    public Response login(@Valid AuthRequestDto authRequestDto) {
+        UserPerson person = userServices.findUserByCpf(authRequestDto.getIdentify());
+        if (person != null && person.getSenha().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
+            try {
+                return Response.ok(new AuthResponseDto(TokenUteis.generateToken(person.getNome(), person.getRoles(), duration, issuer))).build();
+            } catch (Exception e) {
+                return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
+            }
+        } else {
+            return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
+        }
+    }
+
 
     @POST
+    @PermitAll
     public Response insertUserPersonRest(@Valid UserPerson person) {
         try {
             userServices.insertUser(person);
@@ -57,6 +89,7 @@ public class UserResource {
     }
 
     @GET
+    @RolesAllowed("USER")
     public Response findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         UserPerson user = null;
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
