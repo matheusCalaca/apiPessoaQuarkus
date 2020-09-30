@@ -1,7 +1,5 @@
 package br.com.matheusCalaca.user;
 
-import static br.com.matheusCalaca.user.model.RoleEnum.USER;
-
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -22,7 +20,6 @@ import br.com.matheusCalaca.user.DTO.AuthRequestDto;
 import br.com.matheusCalaca.user.DTO.AuthResponseDto;
 import br.com.matheusCalaca.user.JWT.PBKDF2Encoder;
 import br.com.matheusCalaca.user.JWT.TokenUteis;
-import br.com.matheusCalaca.user.model.RoleEnum;
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.services.UserServices;
 import org.apache.http.HttpStatus;
@@ -38,16 +35,22 @@ public class UserResource {
     @Inject
     PBKDF2Encoder passwordEncoder;
 
-    @ConfigProperty(name = "br.com.matheuscalaca.quarkusjwt.jwt.duration") public Long duration;
-    @ConfigProperty(name = "mp.jwt.verify.issuer") public String issuer;
+    @ConfigProperty(name = "br.com.matheuscalaca.quarkusjwt.jwt.duration")
+    public Long duration;
+    @ConfigProperty(name = "mp.jwt.verify.issuer")
+    public String issuer;
 
+    //todo: não exibir a senha
     @PermitAll
-    @POST @Path("/login") @Produces(MediaType.APPLICATION_JSON)
+    @POST
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response login(@Valid AuthRequestDto authRequestDto) {
         UserPerson person = userServices.findUserByCpf(authRequestDto.getIdentify());
         if (person != null && person.getSenha().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
             try {
-                return Response.ok(new AuthResponseDto(TokenUteis.generateToken(person.getNome(), person.getRoles(), duration, issuer))).build();
+                String token = TokenUteis.generateToken(person.getNome(), person.getRoles(), duration, issuer);
+                return Response.ok(new AuthResponseDto(token)).build();
             } catch (Exception e) {
                 return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
             }
@@ -70,7 +73,9 @@ public class UserResource {
         return Response.ok().build();
     }
 
+    //todo: não permitir a alteração da senha
     @PUT
+    @RolesAllowed({"ADIMIN", "USER"})
     public Response updateUserPersonRest(@Valid UserPerson person) {
         try {
             userServices.updateUser(person);
@@ -84,12 +89,13 @@ public class UserResource {
     }
 
     @DELETE
+    @RolesAllowed({"ADIMIN"})
     public void deleteUserPersonRest(@QueryParam("cpf") String cpf) {
         userServices.deleteUser(cpf);
     }
 
     @GET
-    @RolesAllowed("USER")
+    @RolesAllowed({"ADIMIN", "USER"})
     public Response findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         UserPerson user = null;
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();

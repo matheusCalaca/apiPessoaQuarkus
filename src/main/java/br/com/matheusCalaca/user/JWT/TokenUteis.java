@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.management.relation.Role;
-
 import br.com.matheusCalaca.user.model.RoleEnum;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
@@ -20,8 +18,18 @@ public class TokenUteis implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Gera o token para o usuario logado
+     *
+     * @param username
+     * @param roles (regra de acesso)
+     * @param duration (duração do token)
+     * @param issuer (Chave privada)
+     * @return
+     * @throws Exception
+     */
     public static String generateToken(String username, List<RoleEnum> roles, Long duration, String issuer) throws Exception {
-        String privateKeyLocation = "/privatekey.pem";
+        final String privateKeyLocation = "/privatekey.pem";
         PrivateKey privateKey = readPrivateKey(privateKeyLocation);
 
         JwtClaimsBuilder claimsBuilder = Jwt.claims();
@@ -37,6 +45,7 @@ public class TokenUteis implements Serializable {
         claimsBuilder.groups(groups);
 
         return claimsBuilder.jws().signatureKeyId(privateKeyLocation).sign(privateKey);
+
     }
 
     public static PrivateKey readPrivateKey(final String pemResName) throws Exception {
