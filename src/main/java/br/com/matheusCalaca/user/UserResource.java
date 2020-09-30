@@ -61,7 +61,7 @@ public class UserResource {
 
 
     @POST
-    @PermitAll
+    @RolesAllowed({"ADIMIN", "USER"})
     public Response insertUserPersonRest(@Valid UserPerson person) {
         try {
             userServices.insertUser(person);
