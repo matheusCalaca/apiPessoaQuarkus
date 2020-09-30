@@ -94,6 +94,7 @@ public class UserResource {
         userServices.deleteUser(cpf);
     }
 
+    //todo: remover o ID
     @GET
     @RolesAllowed({"ADIMIN", "USER"})
     public Response findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf, @QueryParam("email") String email) {
