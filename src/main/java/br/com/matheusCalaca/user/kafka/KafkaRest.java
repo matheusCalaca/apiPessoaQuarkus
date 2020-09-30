@@ -1,14 +1,17 @@
 package br.com.matheusCalaca.user.kafka;
 
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import br.com.matheusCalaca.user.model.UserPerson;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.jboss.resteasy.annotations.SseElementType;
 import org.reactivestreams.Publisher;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 
 @Path("/kafka")
 public class KafkaRest {
@@ -23,7 +26,7 @@ public class KafkaRest {
     Emitter<UserPerson> mensagemEmitter;
 
     @POST
-    public void insertMensagemKafka( UserPerson person) {
+    public void insertMensagemKafka(UserPerson person) {
         mensagemEmitter.send(person);
     }
 

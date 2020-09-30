@@ -1,20 +1,17 @@
 package br.com.matheusCalaca.user.model;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity(name = "USER")
 public class UserPerson extends PanacheEntity implements Serializable {
@@ -39,7 +36,7 @@ public class UserPerson extends PanacheEntity implements Serializable {
     private String email;
 
     @NotNull(message = "Campo senha não pode ser NULL")
-    @Column( nullable = false)
+    @Column(nullable = false)
     private String senha;
 
     @Column

@@ -98,7 +98,6 @@ public class UserResource {
     @GET
     @RolesAllowed({"ADIMIN", "USER"})
     public Response findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf, @QueryParam("email") String email) {
-        UserPerson user = null;
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
         boolean emailIsNotEmpty = email != null && !email.isEmpty();
         UserPerson person = null;
