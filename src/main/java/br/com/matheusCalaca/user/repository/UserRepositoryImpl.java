@@ -21,7 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Transactional
     public void updateUser(UserPerson person) {
-        UserPerson.update("nome = ?1,  sobrenome = ?2, email = ?3, dataNascimento = ?4 where cpf = ?5", person.getNome(), person.getSobrenome(), person.getEmail(), person.getDataNascimento(), person.getCpf());
+        UserPerson.update("nome = ?1,  sobrenome = ?2, dataNascimento = ?3 where cpf = ?4", person.getNome(), person.getSobrenome(),  person.getDataNascimento(), person.getCpf());
     }
 
     @Transactional
