@@ -1,3 +1,4 @@
+import br.com.matheusCalaca.user.JWT.PBKDF2Encoder
 import br.com.matheusCalaca.user.model.UserPerson
 import br.com.matheusCalaca.user.repository.UserRepository
 import br.com.matheusCalaca.user.services.UserServicesImpl
@@ -15,6 +16,9 @@ class UserServicesImplTest extends Specification {
 
     @InjectMocks
     UserServicesImpl servicesImpl
+
+    @Mock
+    PBKDF2Encoder pbkdf2Encoder
 
     @Mock
     UserRepository userRepository
@@ -122,10 +126,11 @@ class UserServicesImplTest extends Specification {
     def "Usuario cadastrado com sucesso"() {
 
         given:
-        def bulidPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome)
+        def bulidPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
 
         when:
         when(userRepository.insertUser(bulidPerson)).thenReturn(bulidPerson)
+
 
         def personReturn = servicesImpl.insertUser(person)
 
@@ -134,15 +139,15 @@ class UserServicesImplTest extends Specification {
         bulidPerson == personReturn
 
         where:
-        cpf           | dataNasimento         | email              | nome           | sobrnome
-        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock"
-        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock"
+        cpf           | dataNasimento         | email              | nome           | sobrnome      | senha
+        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234"
+        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234"
     }
 
     def "Teste update"() {
 
         given:
-        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome)
+        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
 
         when:
         when(servicesImpl.findUserByCpf("11111111111")).thenThrow(NoResultException)
@@ -154,11 +159,10 @@ class UserServicesImplTest extends Specification {
         error.message == expectedMessage
 
         where:
-        cpf           | dataNasimento         | email              | nome           | sobrnome      || expectedException        | expectedMessage
-        "11111111111" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" || NoResultException        | null
-        ""            | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" || IllegalArgumentException | 'CPF invalido!'
-        null          | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" || IllegalArgumentException | 'CPF invalido!'
-        "22222222222" | new Date(1995, 8, 27) | null               | "matheus mock" | "calaça mock" || IllegalArgumentException | 'E-mail invalido!'
+        cpf           | dataNasimento         | email              | nome           | sobrnome      | senha  || expectedException        | expectedMessage
+        "11111111111" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || NoResultException        | null
+        ""            | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'Valor invalido para a ação!'
+        null          | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'Valor invalido para a ação!'
     }
 
     def "Teste DELETE"() {
@@ -221,13 +225,14 @@ class UserServicesImplTest extends Specification {
     }
 
 
-    UserPerson builderUser(cpf, dataNasimento, email, nome, sobrenome) {
+    UserPerson builderUser(cpf, dataNasimento, email, nome, sobrenome, senha) {
         person = new UserPerson()
         person.setCpf(cpf)
         person.setDataNascimento(dataNasimento)
         person.setEmail(email)
         person.setNome(nome)
         person.setSobrenome(sobrenome)
+        person.setSenha(senha)
 
         return person
     }

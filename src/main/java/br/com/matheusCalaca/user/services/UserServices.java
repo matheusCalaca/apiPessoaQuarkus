@@ -12,7 +12,6 @@ public interface UserServices {
 
     void deleteUser(String  cpf);
 
-
     UserPerson findUserByCpf(String cpf);
 
     UserPerson findUserByEmail(String email);

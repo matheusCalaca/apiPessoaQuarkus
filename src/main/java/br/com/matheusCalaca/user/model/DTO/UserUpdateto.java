@@ -9,12 +9,9 @@ public class UserUpdateto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
-    @NotNull(message = "Campo Nome não pode ser NULL")
-    @NotEmpty
     private String nome;
 
-    private String sobrenome;
+    private String lastname;
 
     private Date dataNascimento;
 
@@ -27,12 +24,12 @@ public class UserUpdateto implements Serializable {
         this.nome = nome;
     }
 
-    public String getSobrenome() {
-        return sobrenome;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public Date getDataNascimento() {
