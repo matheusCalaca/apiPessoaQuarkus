@@ -30,14 +30,10 @@ class UserServicesImplTest extends Specification {
         MockitoAnnotations.initMocks(this)
     }
 
-    def "CPF user invalid"() {
+    def "Teste de validacao de usuario"() {
 
         given:
-        person.setCpf(cpf)
-        person.setDataNascimento(new Date(1995, 8, 27))
-        person.setEmail("teste@gmail.com")
-        person.setNome("matheus")
-        person.setSobrenome("Calaça")
+        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
 
         when:
         servicesImpl.validUser(person)
@@ -47,79 +43,16 @@ class UserServicesImplTest extends Specification {
         error.message == expectedMessage
 
         where:
-        cpf  || expectedException        | expectedMessage
-        ''   || IllegalArgumentException | 'CPF invalido!'
-        null || IllegalArgumentException | 'CPF invalido!'
+        cpf           | dataNasimento         | email              | nome           | sobrnome      | senha  || expectedException        | expectedMessage
+        ""            | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'CPF invalido!'
+        null          | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'CPF invalido!'
+        "12345678909" | new Date(1995, 8, 27) | "teste"            | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'E-mail invalido!'
+        "12345678909" | new Date(1995, 8, 27) | null               | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'E-mail invalido!'
+        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1"     | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'E-mail invalido!'
+        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | ""             | "calaça mock" | "1234" || IllegalArgumentException | 'Nome invalido!'
+        "12345678909" | new Date(1995, 8, 27) | "teste@gmail1.com" | null           | "calaça mock" | "1234" || IllegalArgumentException | 'Nome invalido!'
+        "12345678909" | new Date()            | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'Data Nascimento invalido!'
 
-    }
-
-    def "Email user invalid"() {
-
-        given:
-        person.setCpf("12345678909")
-        person.setDataNascimento(new Date(1995, 8, 27))
-        person.setEmail(email)
-        person.setNome("matheus")
-        person.setSobrenome("Calaça")
-
-        when:
-        servicesImpl.validUser(person)
-
-        then:
-        def error = thrown(expectedException)
-        error.message == expectedMessage
-
-        where:
-        email        || expectedException        | expectedMessage
-        ''           || IllegalArgumentException | 'E-mail invalido!'
-        null         || IllegalArgumentException | 'E-mail invalido!'
-        'teste'      || IllegalArgumentException | 'E-mail invalido!'
-        'teste@mail' || IllegalArgumentException | 'E-mail invalido!'
-
-    }
-
-    def "Nome user invalid"() {
-
-        given:
-        person.setCpf("12345678909")
-        person.setDataNascimento(new Date(1995, 8, 27))
-        person.setEmail("teste@gmail.com")
-        person.setNome(nome)
-        person.setSobrenome("Calaça")
-
-        when:
-        servicesImpl.validUser(person)
-
-        then:
-        def error = thrown(expectedException)
-        error.message == expectedMessage
-
-        where:
-        nome || expectedException        | expectedMessage
-        ''   || IllegalArgumentException | 'Nome invalido!'
-        null || IllegalArgumentException | 'Nome invalido!'
-
-    }
-
-    def "Data Nascimento user invalid"() {
-
-        given:
-        person.setCpf("12345678909")
-        person.setDataNascimento(dataNasimento)
-        person.setEmail("teste@gmail.com")
-        person.setNome("matheus")
-        person.setSobrenome("Calaça")
-
-        when:
-        servicesImpl.validUser(person)
-
-        then:
-        def error = thrown(expectedException)
-        error.message == expectedMessage
-
-        where:
-        dataNasimento || expectedException        | expectedMessage
-        new Date()    || IllegalArgumentException | 'Data Nascimento invalido!'
     }
 
 
@@ -163,6 +96,23 @@ class UserServicesImplTest extends Specification {
         "11111111111" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || NoResultException        | null
         ""            | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'Valor invalido para a ação!'
         null          | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234" || IllegalArgumentException | 'Valor invalido para a ação!'
+    }
+
+    def "Validar cadastro"() {
+
+        given:
+        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
+
+        when:
+        when(userRepository.insertUser(person)).thenReturn(person)
+        def user = servicesImpl.insertUser(buildPerson)
+
+        then:
+        user == person
+
+        where:
+        cpf           | dataNasimento         | email              | nome           | sobrnome      | senha
+        "11111111111" | new Date(1995, 8, 27) | "teste@gmail1.com" | "matheus mock" | "calaça mock" | "1234"
     }
 
     def "Teste DELETE"() {
