@@ -18,9 +18,9 @@ import br.com.matheusCalaca.user.repository.UserRepository;
 public class UserServicesImpl implements UserServices {
 
     @Inject
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Inject
-    PBKDF2Encoder pbkdf2Encoder;
+    private PBKDF2Encoder pbkdf2Encoder;
 
     //todo: mover para uma lib
     private final Pattern VALID_EMAIL_ADDRESS_REGEX =
