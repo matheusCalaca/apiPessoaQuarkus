@@ -66,9 +66,24 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public UserPerson updateUser(UserPerson person) {
-        findUserByCpf(person.getCpf());
-        return userRepository.updateUser(person);
+    public UserPerson updateUser( String cpf, UserPerson person) {
+        UserPerson userToUpdate = findUserByCpf(cpf);
+
+        boolean hasSobreNome = person.getSobrenome() != null && !person.getSobrenome().isEmpty() ;
+        boolean hasNome =  person.getNome() != null && !person.getNome().isEmpty();
+        boolean hasDataNascimento = person.getDataNascimento() != null;
+
+        if(hasSobreNome) {
+            userToUpdate.setSobrenome(person.getSobrenome());
+        }
+        if(hasNome) {
+            userToUpdate.setNome(person.getNome());
+        }
+        if(hasDataNascimento) {
+            userToUpdate.setDataNascimento(person.getDataNascimento());
+        }
+
+        return userRepository.updateUser(userToUpdate);
     }
 
     public void deleteUser(String cpf) {

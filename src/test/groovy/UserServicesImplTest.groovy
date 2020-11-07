@@ -85,7 +85,7 @@ class UserServicesImplTest extends Specification {
         when:
         when(servicesImpl.findUserByCpf("11111111111")).thenThrow(NoResultException)
 
-        servicesImpl.updateUser(buildPerson)
+        servicesImpl.updateUser(cpf, buildPerson)
 
         then:
         def error = thrown(expectedException)

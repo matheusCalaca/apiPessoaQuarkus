@@ -8,7 +8,7 @@ public interface UserServices {
 
     UserPerson insertUser(@Valid UserPerson person);
 
-    UserPerson updateUser(UserPerson person);
+    UserPerson updateUser(String cpf, UserPerson person);
 
     void deleteUser(String  cpf);
 
