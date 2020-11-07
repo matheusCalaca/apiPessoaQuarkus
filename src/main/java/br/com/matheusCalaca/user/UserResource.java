@@ -54,13 +54,12 @@ public class UserResource {
     @ConfigProperty(name = "mp.jwt.verify.issuer")
     public String issuer;
 
-    //todo: não exibir a senha
     @PermitAll
     @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@Valid AuthRequestDto authRequestDto) {
-        UserPerson person = userServices.findUserByCpf(authRequestDto.getIdentify());
+        UserPerson person = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), null);
         if (person != null && person.getSenha().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
             try {
                 String token = TokenUteis.generateToken(person.getNome(), person.getRoles(), duration, issuer);
@@ -118,18 +117,8 @@ public class UserResource {
     @RolesAllowed({"ADIMIN", "USER"})
     @SecurityRequirement(name = "Authorization")
     public Response findUserPersonRest(@QueryParam("cpf") String cpf, @QueryParam("email") String email) {
-        //todo: mover para o service regra de negocio
-        boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
-        boolean emailIsNotEmpty = email != null && !email.isEmpty();
-        UserPerson person = null;
-
         try {
-            //todo: mover para o service regra de negocio
-            if (cpfIsNotEmpty) {
-                person = userServices.findUserByCpf(cpf);
-            } else if (emailIsNotEmpty) {
-                person = userServices.findUserByEmail(email);
-            }
+            UserPerson person = userServices.findUserByCpfOrEmail(cpf, email);
 
             UserReturnDto userReturnDto = userMapper.toDto(person);
             return Response.ok().entity(userReturnDto).build();
