@@ -1,4 +1,4 @@
-package br.com.matheusCalaca.user.DTO;
+package br.com.matheusCalaca.user.model.DTO;
 
 import java.io.Serializable;
 

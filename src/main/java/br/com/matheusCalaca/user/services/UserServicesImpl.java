@@ -18,9 +18,9 @@ import br.com.matheusCalaca.user.repository.UserRepository;
 public class UserServicesImpl implements UserServices {
 
     @Inject
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Inject
-    PBKDF2Encoder pbkdf2Encoder;
+    private PBKDF2Encoder pbkdf2Encoder;
 
     //todo: mover para uma lib
     private final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -66,10 +66,24 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public void updateUser(UserPerson person) {
-        validUser(person);
-        findUserByCpf(person.getCpf());
-        userRepository.updateUser(person);
+    public UserPerson updateUser( String cpf, UserPerson person) {
+        UserPerson userToUpdate = findUserByCpf(cpf);
+
+        boolean hasSobreNome = person.getSobrenome() != null && !person.getSobrenome().isEmpty() ;
+        boolean hasNome =  person.getNome() != null && !person.getNome().isEmpty();
+        boolean hasDataNascimento = person.getDataNascimento() != null;
+
+        if(hasSobreNome) {
+            userToUpdate.setSobrenome(person.getSobrenome());
+        }
+        if(hasNome) {
+            userToUpdate.setNome(person.getNome());
+        }
+        if(hasDataNascimento) {
+            userToUpdate.setDataNascimento(person.getDataNascimento());
+        }
+
+        return userRepository.updateUser(userToUpdate);
     }
 
     public void deleteUser(String cpf) {

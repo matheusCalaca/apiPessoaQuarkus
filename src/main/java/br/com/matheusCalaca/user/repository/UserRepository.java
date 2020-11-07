@@ -7,7 +7,7 @@ public interface UserRepository {
     UserPerson insertUser(UserPerson person);
 
 
-    void updateUser(UserPerson person);
+    UserPerson updateUser(UserPerson person);
 
 
     void deleteUser(Long id);

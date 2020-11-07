@@ -1,26 +1,17 @@
-package br.com.matheusCalaca.user.model;
+package br.com.matheusCalaca.user.model.DTO;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-
-@Entity(name = "USER")
-public class UserPerson extends PanacheEntity implements Serializable {
+public class UserInsertDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
 
     @NotNull(message = "Campo Nome não pode ser NULL")
-    @Column(nullable = false)
+    @NotEmpty
     private String nome;
 
     private String sobrenome;
@@ -28,22 +19,15 @@ public class UserPerson extends PanacheEntity implements Serializable {
     private Date dataNascimento;
 
     @NotNull(message = "Campo CPF não pode ser NULL")
-    @Column(unique = true, nullable = false)
     private String cpf;
 
     @NotNull(message = "Campo E-mail não pode ser NULL")
-    @Column(unique = true, nullable = false)
+    @NotEmpty
     private String email;
 
     @NotNull(message = "Campo senha não pode ser NULL")
-    @Column(nullable = false)
+    @NotEmpty
     private String senha;
-
-    @Column
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = RoleEnum.class, fetch = FetchType.EAGER)
-    private List<RoleEnum> roles;
-
 
     public String getNome() {
         return nome;
@@ -59,6 +43,14 @@ public class UserPerson extends PanacheEntity implements Serializable {
 
     public void setSobrenome(String sobrenome) {
         this.sobrenome = sobrenome;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
     public String getCpf() {
@@ -77,27 +69,11 @@ public class UserPerson extends PanacheEntity implements Serializable {
         this.email = email;
     }
 
-    public Date getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
     public String getSenha() {
         return senha;
     }
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public List<RoleEnum> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<RoleEnum> roles) {
-        this.roles = roles;
     }
 }

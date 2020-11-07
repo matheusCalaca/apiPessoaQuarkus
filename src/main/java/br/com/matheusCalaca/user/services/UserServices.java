@@ -8,10 +8,9 @@ public interface UserServices {
 
     UserPerson insertUser(@Valid UserPerson person);
 
-    void updateUser(UserPerson person);
+    UserPerson updateUser(String cpf, UserPerson person);
 
     void deleteUser(String  cpf);
-
 
     UserPerson findUserByCpf(String cpf);
 
