@@ -152,7 +152,6 @@ class UserServicesImplTest extends Specification {
         null          || IllegalArgumentException | 'Valor invalido para a ação!'
         ""            || IllegalArgumentException | 'Valor invalido para a ação!'
         "11111111111" || NoResultException        | null
-        //todo: adicionar validação para cpf invalido
 
     }
 
@@ -170,7 +169,6 @@ class UserServicesImplTest extends Specification {
         cpf  || expectedException        | expectedMessage
         null || IllegalArgumentException | 'Valor invalido para a ação!'
         ""   || IllegalArgumentException | 'Valor invalido para a ação!'
-        //todo: adicionar validação para cpf invalido
 
     }
 

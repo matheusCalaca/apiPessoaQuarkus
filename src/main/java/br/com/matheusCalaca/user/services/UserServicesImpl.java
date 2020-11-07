@@ -13,6 +13,7 @@ import br.com.matheusCalaca.user.JWT.PBKDF2Encoder;
 import br.com.matheusCalaca.user.model.RoleEnum;
 import br.com.matheusCalaca.user.model.UserPerson;
 import br.com.matheusCalaca.user.repository.UserRepository;
+import br.com.matheusCalaca.user.uteis.UteisValidation;
 
 @ApplicationScoped
 public class UserServicesImpl implements UserServices {
@@ -22,14 +23,6 @@ public class UserServicesImpl implements UserServices {
     @Inject
     private PBKDF2Encoder pbkdf2Encoder;
 
-    //todo: mover para uma lib
-    private final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
-    private boolean validateEmail(String emailStr) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
-        return matcher.find();
-    }
 
     public UserPerson insertUser(UserPerson person) {
         validUser(person);
@@ -46,22 +39,28 @@ public class UserServicesImpl implements UserServices {
     }
 
     private void validUser(UserPerson person) {
-        if (person.getCpf() == null || person.getCpf().isEmpty()) {
+        boolean isInvalidEmail = person.getEmail() == null || !UteisValidation.validateEmail(person.getEmail());
+        boolean hasCpf = person.getCpf() == null || person.getCpf().isEmpty();
+        boolean hasName = person.getNome() == null || person.getNome().isEmpty();
+        boolean IsValidBithday = person.getDataNascimento() != null && new Date().after(person.getDataNascimento());
+        boolean hasValidPassword = person.getSenha() != null && person.getSenha().trim().isEmpty();
+
+        if (hasCpf) {
             throw new IllegalArgumentException("CPF invalido!");
         }
 
-        if (person.getEmail() == null || !validateEmail(person.getEmail())) {
+        if (isInvalidEmail) {
             throw new IllegalArgumentException("E-mail invalido!");
         }
 
-        if (person.getNome() == null || person.getNome().isEmpty()) {
+        if (hasName) {
             throw new IllegalArgumentException("Nome invalido!");
         }
 
-        if (person.getDataNascimento() != null && new Date().after(person.getDataNascimento())) {
+        if (IsValidBithday) {
             throw new IllegalArgumentException("Data Nascimento invalido!");
         }
-        if (person.getSenha() != null && person.getSenha().trim().isEmpty()) {
+        if (hasValidPassword) {
             throw new IllegalArgumentException("Senha invalida!");
         }
     }
@@ -94,12 +93,27 @@ public class UserServicesImpl implements UserServices {
         userRepository.deleteUser(person.id);
     }
 
-    public UserPerson findUserByCpf(String cpf) {
+    @Override
+    public UserPerson findUserByCpfOrEmail(String cpf, String email) {
+        boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
+        boolean emailIsNotEmpty = email != null && !email.isEmpty();
+        UserPerson person = null;
+
+        if (cpfIsNotEmpty) {
+            person = findUserByCpf(cpf);
+        } else if (emailIsNotEmpty) {
+            person = findUserByEmail(email);
+        }
+
+        return person;
+    }
+
+    private UserPerson findUserByCpf(String cpf) {
         validaBusca(cpf);
         return userRepository.findUserByCpf(cpf);
     }
 
-    public UserPerson findUserByEmail(String email) {
+    private UserPerson findUserByEmail(String email) {
         validaBusca(email);
         return userRepository.findUserByEmail(email);
     }
