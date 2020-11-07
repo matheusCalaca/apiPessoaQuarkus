@@ -59,7 +59,7 @@ public class UserResource {
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@Valid AuthRequestDto authRequestDto) {
-        UserPerson person = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), null);
+        UserPerson person = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), authRequestDto.getEmail());
         if (person != null && person.getSenha().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
             try {
                 String token = TokenUteis.generateToken(person.getNome(), person.getRoles(), duration, issuer);

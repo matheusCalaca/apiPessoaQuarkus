@@ -3,10 +3,9 @@ package br.com.matheusCalaca.user.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.NotFoundException;
 
 import br.com.matheusCalaca.user.JWT.PBKDF2Encoder;
@@ -65,20 +64,20 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public UserPerson updateUser( String cpf, UserPerson person) {
+    public UserPerson updateUser(String cpf, UserPerson person) {
         UserPerson userToUpdate = findUserByCpf(cpf);
 
-        boolean hasSobreNome = person.getSobrenome() != null && !person.getSobrenome().isEmpty() ;
-        boolean hasNome =  person.getNome() != null && !person.getNome().isEmpty();
+        boolean hasSobreNome = person.getSobrenome() != null && !person.getSobrenome().isEmpty();
+        boolean hasNome = person.getNome() != null && !person.getNome().isEmpty();
         boolean hasDataNascimento = person.getDataNascimento() != null;
 
-        if(hasSobreNome) {
+        if (hasSobreNome) {
             userToUpdate.setSobrenome(person.getSobrenome());
         }
-        if(hasNome) {
+        if (hasNome) {
             userToUpdate.setNome(person.getNome());
         }
-        if(hasDataNascimento) {
+        if (hasDataNascimento) {
             userToUpdate.setDataNascimento(person.getDataNascimento());
         }
 
@@ -98,14 +97,16 @@ public class UserServicesImpl implements UserServices {
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
         boolean emailIsNotEmpty = email != null && !email.isEmpty();
         UserPerson person = null;
-
-        if (cpfIsNotEmpty) {
-            person = findUserByCpf(cpf);
-        } else if (emailIsNotEmpty) {
-            person = findUserByEmail(email);
+        try {
+            if (cpfIsNotEmpty) {
+                person = findUserByCpf(cpf);
+            } else if (emailIsNotEmpty) {
+                person = findUserByEmail(email);
+            }
+            return person;
+        } catch (NoResultException e) {
+            return null;
         }
-
-        return person;
     }
 
     private UserPerson findUserByCpf(String cpf) {
