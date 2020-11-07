@@ -28,11 +28,15 @@ import br.com.matheusCalaca.user.model.mapper.UserMapper;
 import br.com.matheusCalaca.user.services.UserServices;
 import org.apache.http.HttpStatus;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 
 @Path("/user")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@SecurityScheme(securitySchemeName = "Authorization", type = SecuritySchemeType.HTTP, scheme = "bearer")
 public class UserResource {
 
     @Inject
@@ -70,6 +74,7 @@ public class UserResource {
 
     @POST
     @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
     public Response insertUserPersonRest(@RequestBody @Valid UserInsertDto userDTO) {
         try {
             UserPerson user = userMapper.toUser(userDTO);
@@ -85,6 +90,7 @@ public class UserResource {
     //todo: não permitir a alteração da senha
     @PUT
     @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
     public Response updateUserPersonRest(@Valid @RequestBody UserUpdateto userDTO) {
         try {
             UserPerson user = userMapper.toUser(userDTO);
@@ -100,12 +106,14 @@ public class UserResource {
 
     @DELETE
     @RolesAllowed({"ADIMIN"})
+    @SecurityRequirement(name = "Authorization")
     public void deleteUserPersonRest(@QueryParam("cpf") String cpf) {
         userServices.deleteUser(cpf);
     }
 
     @GET
     @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
     public Response findUserPersonRest(@QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         //todo: mover para o service regra de negocio
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();

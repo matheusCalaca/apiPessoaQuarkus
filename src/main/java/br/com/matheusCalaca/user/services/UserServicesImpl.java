@@ -66,9 +66,9 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    public void updateUser(UserPerson person) {
+    public UserPerson updateUser(UserPerson person) {
         findUserByCpf(person.getCpf());
-        userRepository.updateUser(person);
+        return userRepository.updateUser(person);
     }
 
     public void deleteUser(String cpf) {
