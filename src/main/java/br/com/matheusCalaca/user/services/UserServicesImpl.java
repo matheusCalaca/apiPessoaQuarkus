@@ -37,12 +37,13 @@ public class UserServicesImpl implements UserServices {
         return userRepository.insertUser(user);
     }
 
-    private void validUser(User user) {
-        boolean isInvalidEmail = user.getEmail() == null || !UteisValidation.validateEmail(user.getEmail());
-        boolean hasCpf = user.getCpf() == null || user.getCpf().isEmpty();
-        boolean hasName = user.getNome() == null || user.getNome().isEmpty();
-        boolean IsValidBithday = user.getDataNascimento() != null && new Date().after(user.getDataNascimento());
-        boolean hasValidPassword = user.getSenha() != null && user.getSenha().trim().isEmpty();
+
+    private void validUser(UserPerson person) {
+        boolean isInvalidEmail = person.getEmail() == null || !UteisValidation.isValidEmail(user.getEmail());
+        boolean hasCpf = person.getCpf() == null || person.getCpf().isEmpty();
+        boolean hasName = person.getNome() == null || person.getNome().isEmpty();
+        boolean IsValidBithday = person.getDataNascimento() != null && new Date().after(person.getDataNascimento());
+        boolean isInvalidPassword = !UteisValidation.isValidPassword(user.getSenha());
 
         if (hasCpf) {
             throw new IllegalArgumentException("CPF invalido!");
@@ -59,7 +60,7 @@ public class UserServicesImpl implements UserServices {
         if (IsValidBithday) {
             throw new IllegalArgumentException("Data Nascimento invalido!");
         }
-        if (hasValidPassword) {
+        if (isInvalidPassword) {
             throw new IllegalArgumentException("Senha invalida!");
         }
     }
