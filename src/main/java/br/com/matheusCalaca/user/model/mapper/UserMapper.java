@@ -3,7 +3,7 @@ package br.com.matheusCalaca.user.model.mapper;
 import br.com.matheusCalaca.user.model.DTO.UserInsertDto;
 import br.com.matheusCalaca.user.model.DTO.UserReturnDto;
 import br.com.matheusCalaca.user.model.DTO.UserUpdateto;
-import br.com.matheusCalaca.user.model.UserPerson;
+import br.com.matheusCalaca.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,7 +12,7 @@ public interface UserMapper {
 
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "id", ignore = true)
-    UserPerson toUser(UserInsertDto sourceDto);
+    User toUser(UserInsertDto sourceDto);
 
     @Mapping(target = "sobrenome", source = "lastname")
     @Mapping(target = "senha", ignore = true)
@@ -20,7 +20,7 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "cpf", ignore = true)
-    UserPerson toUser(UserUpdateto sourceDto);
+    User toUser(UserUpdateto sourceDto);
 
-    UserReturnDto toDto(UserPerson source);
+    UserReturnDto toDto(User source);
 }

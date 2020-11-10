@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity(name = "USER")
-public class UserPerson extends PanacheEntity implements Serializable {
+public class User extends PanacheEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

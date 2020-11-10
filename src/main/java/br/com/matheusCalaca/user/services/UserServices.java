@@ -1,17 +1,17 @@
 package br.com.matheusCalaca.user.services;
 
-import br.com.matheusCalaca.user.model.UserPerson;
+import br.com.matheusCalaca.user.model.User;
 
 import javax.validation.Valid;
 
 public interface UserServices {
 
-    UserPerson insertUser(@Valid UserPerson person);
+    User insertUser(@Valid User user);
 
-    UserPerson updateUser(String cpf, UserPerson person);
+    User updateUser(String cpf, User user);
 
     void deleteUser(String  cpf);
 
-    UserPerson findUserByCpfOrEmail(String cpf, String email);
+    User findUserByCpfOrEmail(String cpf, String email);
 
 }

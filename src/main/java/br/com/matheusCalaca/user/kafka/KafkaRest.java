@@ -7,7 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.matheusCalaca.user.model.UserPerson;
+import br.com.matheusCalaca.user.model.User;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.jboss.resteasy.annotations.SseElementType;
@@ -19,15 +19,15 @@ public class KafkaRest {
 
     @Inject
     @Channel("user-stream")
-    Publisher<UserPerson> mensagemConsumer;
+    Publisher<User> mensagemConsumer;
 
     @Inject
     @Channel("user-stream")
-    Emitter<UserPerson> mensagemEmitter;
+    Emitter<User> mensagemEmitter;
 
     @POST
-    public void insertMensagemKafka(UserPerson person) {
-        mensagemEmitter.send(person);
+    public void insertMensagemKafka(User user) {
+        mensagemEmitter.send(user);
     }
 
 
@@ -35,7 +35,7 @@ public class KafkaRest {
     @Path("/stream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @SseElementType("text/plain")
-    public Publisher<UserPerson> stream() {
+    public Publisher<User> stream() {
         return mensagemConsumer;
     }
 }
