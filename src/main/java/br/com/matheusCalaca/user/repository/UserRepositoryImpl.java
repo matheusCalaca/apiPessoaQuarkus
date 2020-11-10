@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import br.com.matheusCalaca.user.model.UserPerson;
+import br.com.matheusCalaca.user.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
 @ApplicationScoped
@@ -14,36 +14,36 @@ public class UserRepositoryImpl implements UserRepository {
     EntityManager entityManager;
 
     @Transactional
-    public UserPerson insertUser(UserPerson person) {
-        entityManager.persist(person);
-        return person;
+    public User insertUser(User user) {
+        entityManager.persist(user);
+        return user;
     }
 
     @Transactional
-    public UserPerson updateUser(UserPerson person) {
-        UserPerson.update("nome = ?1,  sobrenome = ?2, dataNascimento = ?3 where cpf = ?4", person.getNome(), person.getSobrenome(),  person.getDataNascimento(), person.getCpf());
-        return findUserByCpf(person.getCpf());
+    public User updateUser(User user) {
+        User.update("nome = ?1,  sobrenome = ?2, dataNascimento = ?3 where cpf = ?4", user.getNome(), user.getSobrenome(),  user.getDataNascimento(), user.getCpf());
+        return findUserByCpf(user.getCpf());
     }
 
     @Transactional
     public void deleteUser(Long id) {
-        UserPerson.deleteById(id);
+        User.deleteById(id);
     }
 
     @Transactional
-    public UserPerson findUserById(Integer id) {
-        return UserPerson.findById(id.longValue());
+    public User findUserById(Integer id) {
+        return User.findById(id.longValue());
     }
 
     @Transactional
-    public UserPerson findUserByCpf(String cpf) {
-        PanacheQuery<UserPerson> panacheQuery = UserPerson.find("cpf", cpf);
+    public User findUserByCpf(String cpf) {
+        PanacheQuery<User> panacheQuery = User.find("cpf", cpf);
         return panacheQuery.singleResult();
     }
 
     @Transactional
-    public UserPerson findUserByEmail(String email) {
-        PanacheQuery<UserPerson> panacheQuery = UserPerson.find("email", email);
+    public User findUserByEmail(String email) {
+        PanacheQuery<User> panacheQuery = User.find("email", email);
         return panacheQuery.singleResult();
     }
 }
