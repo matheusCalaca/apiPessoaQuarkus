@@ -38,11 +38,11 @@ public class UserServicesImpl implements UserServices {
     }
 
     private void validUser(UserPerson person) {
-        boolean isInvalidEmail = person.getEmail() == null || !UteisValidation.validateEmail(person.getEmail());
+        boolean isInvalidEmail = person.getEmail() == null || !UteisValidation.isValidEmail(person.getEmail());
         boolean hasCpf = person.getCpf() == null || person.getCpf().isEmpty();
         boolean hasName = person.getNome() == null || person.getNome().isEmpty();
         boolean IsValidBithday = person.getDataNascimento() != null && new Date().after(person.getDataNascimento());
-        boolean hasValidPassword = person.getSenha() != null && person.getSenha().trim().isEmpty();
+        boolean isInvalidPassword = !UteisValidation.isValidPassword(person.getSenha());
 
         if (hasCpf) {
             throw new IllegalArgumentException("CPF invalido!");
@@ -59,7 +59,7 @@ public class UserServicesImpl implements UserServices {
         if (IsValidBithday) {
             throw new IllegalArgumentException("Data Nascimento invalido!");
         }
-        if (hasValidPassword) {
+        if (isInvalidPassword) {
             throw new IllegalArgumentException("Senha invalida!");
         }
     }
