@@ -25,7 +25,7 @@ import br.com.matheusCalaca.user.model.DTO.AuthResponseDto;
 import br.com.matheusCalaca.user.model.DTO.UserInsertDto;
 import br.com.matheusCalaca.user.model.DTO.UserReturnDto;
 import br.com.matheusCalaca.user.model.DTO.UserUpdateto;
-import br.com.matheusCalaca.user.model.UserPerson;
+import br.com.matheusCalaca.user.model.User;
 import br.com.matheusCalaca.user.model.mapper.UserMapper;
 import br.com.matheusCalaca.user.services.UserServices;
 import org.apache.http.HttpStatus;
@@ -59,10 +59,10 @@ public class UserResource {
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@Valid AuthRequestDto authRequestDto) {
-        UserPerson person = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), authRequestDto.getEmail());
-        if (person != null && person.getSenha().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
+        User user = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), authRequestDto.getEmail());
+        if (user != null && user.getSenha().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
             try {
-                String token = TokenUteis.generateToken(person.getNome(), person.getRoles(), duration, issuer);
+                String token = TokenUteis.generateToken(user.getNome(), user.getRoles(), duration, issuer);
                 return Response.ok(new AuthResponseDto(token)).build();
             } catch (Exception e) {
                 return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
@@ -78,7 +78,7 @@ public class UserResource {
     @SecurityRequirement(name = "Authorization")
     public Response insertUserPersonRest(@RequestBody @Valid UserInsertDto userDTO) {
         try {
-            UserPerson user = userMapper.toUser(userDTO);
+            User user = userMapper.toUser(userDTO);
             userServices.insertUser(user);
         } catch (IllegalArgumentException e) {
             return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
@@ -95,7 +95,7 @@ public class UserResource {
     @SecurityRequirement(name = "Authorization")
     public Response updateUserPersonRest(@PathParam("cpf") @NotEmpty(message = "Informe o CPF de alteração") String cpf, @Valid @RequestBody UserUpdateto userDTO) {
         try {
-            UserPerson user = userMapper.toUser(userDTO);
+            User user = userMapper.toUser(userDTO);
             userServices.updateUser(cpf, user);
         } catch (IllegalArgumentException e) {
 
@@ -118,9 +118,9 @@ public class UserResource {
     @SecurityRequirement(name = "Authorization")
     public Response findUserPersonRest(@QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         try {
-            UserPerson person = userServices.findUserByCpfOrEmail(cpf, email);
+            User user = userServices.findUserByCpfOrEmail(cpf, email);
 
-            UserReturnDto userReturnDto = userMapper.toDto(person);
+            UserReturnDto userReturnDto = userMapper.toDto(user);
             return Response.ok().entity(userReturnDto).build();
 
         } catch (NoResultException e) {

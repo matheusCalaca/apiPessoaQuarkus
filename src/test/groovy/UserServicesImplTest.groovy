@@ -1,5 +1,5 @@
 import br.com.matheusCalaca.user.JWT.PBKDF2Encoder
-import br.com.matheusCalaca.user.model.UserPerson
+import br.com.matheusCalaca.user.model.User
 import br.com.matheusCalaca.user.repository.UserRepository
 import br.com.matheusCalaca.user.services.UserServicesImpl
 import org.mockito.InjectMocks
@@ -24,7 +24,7 @@ class UserServicesImplTest extends Specification {
     UserRepository userRepository
 
     @Shared
-    def person = new UserPerson()
+    def person = new User()
 
     def setup() {
         MockitoAnnotations.initMocks(this)
@@ -173,8 +173,8 @@ class UserServicesImplTest extends Specification {
     }
 
 
-    UserPerson builderUser(cpf, dataNasimento, email, nome, sobrenome, senha) {
-        person = new UserPerson()
+    User builderUser(cpf, dataNasimento, email, nome, sobrenome, senha) {
+        person = new User()
         person.setCpf(cpf)
         person.setDataNascimento(dataNasimento)
         person.setEmail(email)

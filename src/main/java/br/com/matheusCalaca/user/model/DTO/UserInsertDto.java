@@ -2,6 +2,7 @@ package br.com.matheusCalaca.user.model.DTO;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.json.bind.annotation.JsonbDateFormat;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +17,7 @@ public class UserInsertDto implements Serializable {
 
     private String sobrenome;
 
+    @JsonbDateFormat("yyyy-MM-dd")
     private Date dataNascimento;
 
     @NotNull(message = "Campo CPF não pode ser NULL")
