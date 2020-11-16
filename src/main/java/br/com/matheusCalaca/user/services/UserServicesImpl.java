@@ -32,18 +32,18 @@ public class UserServicesImpl implements UserServices {
 
         }
 
-        user.setSenha(pbkdf2Encoder.encode(user.getSenha()));
+        user.setPassword(pbkdf2Encoder.encode(user.getPassword()));
 
         return userRepository.insertUser(user);
     }
 
 
-    private void validUser(UserPerson person) {
-        boolean isInvalidEmail = person.getEmail() == null || !UteisValidation.isValidEmail(user.getEmail());
-        boolean hasCpf = person.getCpf() == null || person.getCpf().isEmpty();
-        boolean hasName = person.getNome() == null || person.getNome().isEmpty();
-        boolean IsValidBithday = person.getDataNascimento() != null && new Date().after(person.getDataNascimento());
-        boolean isInvalidPassword = !UteisValidation.isValidPassword(user.getSenha());
+    private void validUser(User user) {
+        boolean isInvalidEmail = user.getEmail() == null || !UteisValidation.isValidEmail(user.getEmail());
+        boolean hasCpf = user.getCpf() == null || user.getCpf().isEmpty();
+        boolean hasName = user.getName() == null || user.getName().isEmpty();
+        boolean IsValidBithday = user.getDateOfBirth() != null && new Date().after(user.getDateOfBirth());
+        boolean isInvalidPassword = !UteisValidation.isValidPassword(user.getPassword());
 
         if (hasCpf) {
             throw new IllegalArgumentException("CPF invalido!");
@@ -68,18 +68,18 @@ public class UserServicesImpl implements UserServices {
     public User updateUser(String cpf, User user) {
         User userToUpdate = findUserByCpf(cpf);
 
-        boolean hasSobreNome = user.getSobrenome() != null && !user.getSobrenome().isEmpty();
-        boolean hasNome = user.getNome() != null && !user.getNome().isEmpty();
-        boolean hasDataNascimento = user.getDataNascimento() != null;
+        boolean hasSobreNome = user.getLastname() != null && !user.getLastname().isEmpty();
+        boolean hasNome = user.getName() != null && !user.getName().isEmpty();
+        boolean hasDataNascimento = user.getDateOfBirth() != null;
 
         if (hasSobreNome) {
-            userToUpdate.setSobrenome(user.getSobrenome());
+            userToUpdate.setLastname(user.getLastname());
         }
         if (hasNome) {
-            userToUpdate.setNome(user.getNome());
+            userToUpdate.setName(user.getName());
         }
         if (hasDataNascimento) {
-            userToUpdate.setDataNascimento(user.getDataNascimento());
+            userToUpdate.setDateOfBirth(user.getDateOfBirth());
         }
 
         return userRepository.updateUser(userToUpdate);
@@ -97,14 +97,14 @@ public class UserServicesImpl implements UserServices {
     public User findUserByCpfOrEmail(String cpf, String email) {
         boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
         boolean emailIsNotEmpty = email != null && !email.isEmpty();
-        User person = null;
+        User user = null;
         try {
             if (cpfIsNotEmpty) {
-                person = findUserByCpf(cpf);
+                user = findUserByCpf(cpf);
             } else if (emailIsNotEmpty) {
-                person = findUserByEmail(email);
+                user = findUserByEmail(email);
             }
-            return person;
+            return user;
         } catch (NoResultException e) {
             return null;
         }

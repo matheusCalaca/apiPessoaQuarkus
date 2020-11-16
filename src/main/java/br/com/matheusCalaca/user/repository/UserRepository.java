@@ -12,10 +12,6 @@ public interface UserRepository {
 
     void deleteUser(Long id);
 
-
-    User findUserById(Integer id);
-
-
     User findUserByCpf(String cpf);
 
 

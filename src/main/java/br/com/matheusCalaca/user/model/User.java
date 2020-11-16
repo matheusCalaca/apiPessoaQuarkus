@@ -21,11 +21,11 @@ public class User extends PanacheEntity implements Serializable {
 
     @NotNull(message = "Campo Nome não pode ser NULL")
     @Column(nullable = false)
-    private String nome;
+    private String name;
 
-    private String sobrenome;
+    private String lastname;
 
-    private Date dataNascimento;
+    private Date dateOfBirth;
 
     @NotNull(message = "Campo CPF não pode ser NULL")
     @Column(unique = true, nullable = false)
@@ -37,7 +37,7 @@ public class User extends PanacheEntity implements Serializable {
 
     @NotNull(message = "Campo senha não pode ser NULL")
     @Column(nullable = false)
-    private String senha;
+    private String password;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -45,20 +45,20 @@ public class User extends PanacheEntity implements Serializable {
     private List<RoleEnum> roles;
 
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String nome) {
+        this.name = nome;
     }
 
-    public String getSobrenome() {
-        return sobrenome;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
+    public void setLastname(String sobrenome) {
+        this.lastname = sobrenome;
     }
 
     public String getCpf() {
@@ -77,20 +77,20 @@ public class User extends PanacheEntity implements Serializable {
         this.email = email;
     }
 
-    public Date getDataNascimento() {
-        return dataNascimento;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setDateOfBirth(Date dataNascimento) {
+        this.dateOfBirth = dataNascimento;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPassword(String senha) {
+        this.password = senha;
     }
 
     public List<RoleEnum> getRoles() {

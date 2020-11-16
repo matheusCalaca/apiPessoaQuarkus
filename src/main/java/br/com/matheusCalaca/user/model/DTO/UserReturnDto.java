@@ -8,38 +8,38 @@ public class UserReturnDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    private String nome;
+    private String name;
 
-    private String sobrenome;
+    private String lastname;
 
-    private Date dataNascimento;
+    private Date dateOfBirth;
 
     private String cpf;
 
     private String email;
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSobrenome() {
-        return sobrenome;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    public Date getDataNascimento() {
-        return dataNascimento;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getCpf() {

@@ -13,12 +13,12 @@ public class UserInsertDto implements Serializable {
 
     @NotNull(message = "Campo Nome não pode ser NULL")
     @NotEmpty
-    private String nome;
+    private String name;
 
-    private String sobrenome;
+    private String lastName;
 
     @JsonbDateFormat("yyyy-MM-dd")
-    private Date dataNascimento;
+    private Date dateOfBirth;
 
     @NotNull(message = "Campo CPF não pode ser NULL")
     private String cpf;
@@ -29,30 +29,30 @@ public class UserInsertDto implements Serializable {
 
     @NotNull(message = "Campo senha não pode ser NULL")
     @NotEmpty
-    private String senha;
+    private String password;
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSobrenome() {
-        return sobrenome;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public Date getDataNascimento() {
-        return dataNascimento;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getCpf() {
@@ -71,11 +71,11 @@ public class UserInsertDto implements Serializable {
         this.email = email;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

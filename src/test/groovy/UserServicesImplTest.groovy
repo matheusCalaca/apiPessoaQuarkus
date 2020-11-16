@@ -24,19 +24,15 @@ class UserServicesImplTest extends Specification {
     UserRepository userRepository
 
     @Shared
-    def person = new User()
+    def user = new User()
 
     def setup() {
         MockitoAnnotations.initMocks(this)
     }
 
     def "Teste de validacao de usuario"() {
-
-        given:
-        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
-
         when:
-        servicesImpl.validUser(person)
+        servicesImpl.validUser(user)
 
         then:
         def error = thrown(expectedException)
@@ -59,17 +55,17 @@ class UserServicesImplTest extends Specification {
     def "Usuario cadastrado com sucesso"() {
 
         given:
-        def bulidPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
+        def bulidUser = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
 
         when:
-        when(userRepository.insertUser(bulidPerson)).thenReturn(bulidPerson)
+        when(userRepository.insertUser(bulidUser)).thenReturn(bulidUser)
 
 
-        def personReturn = servicesImpl.insertUser(person)
+        def userReturn = servicesImpl.insertUser(user)
 
         then:
 
-        bulidPerson == personReturn
+        bulidUser == userReturn
 
         where:
         cpf           | dataNasimento         | email              | nome           | sobrnome      | senha
@@ -80,12 +76,12 @@ class UserServicesImplTest extends Specification {
     def "Teste update"() {
 
         given:
-        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
+        def buildUser = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
 
         when:
         when(servicesImpl.findUserByCpf("11111111111")).thenThrow(NoResultException)
 
-        servicesImpl.updateUser(cpf, buildPerson)
+        servicesImpl.updateUser(cpf, buildUser)
 
         then:
         def error = thrown(expectedException)
@@ -101,14 +97,14 @@ class UserServicesImplTest extends Specification {
     def "Validar cadastro"() {
 
         given:
-        def buildPerson = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
+        def buildUser = builderUser(cpf, dataNasimento, email, nome, sobrnome, senha)
 
         when:
-        when(userRepository.insertUser(person)).thenReturn(person)
-        def user = servicesImpl.insertUser(buildPerson)
+        when(userRepository.insertUser(user)).thenReturn(user)
+        def user = servicesImpl.insertUser(buildUser)
 
         then:
-        user == person
+        user == this.user
 
         where:
         cpf           | dataNasimento         | email              | nome           | sobrnome      | senha
@@ -174,14 +170,14 @@ class UserServicesImplTest extends Specification {
 
 
     User builderUser(cpf, dataNasimento, email, nome, sobrenome, senha) {
-        person = new User()
-        person.setCpf(cpf)
-        person.setDataNascimento(dataNasimento)
-        person.setEmail(email)
-        person.setNome(nome)
-        person.setSobrenome(sobrenome)
-        person.setSenha(senha)
+        user = new User()
+        user.setCpf(cpf)
+        user.setDateOfBirth(dataNasimento)
+        user.setEmail(email)
+        user.setName(nome)
+        user.setLastname(sobrenome)
+        user.setPassword(senha)
 
-        return person
+        return user
     }
 }

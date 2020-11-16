@@ -46,8 +46,8 @@ public class UserResource {
     @Inject
     PBKDF2Encoder passwordEncoder;
 
-    @Inject
-    UserMapper userMapper;
+//    @Inject
+//    UserMapper userMapper;
 
     @ConfigProperty(name = "br.com.matheuscalaca.quarkusjwt.jwt.duration")
     public Long duration;
@@ -60,9 +60,9 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@Valid AuthRequestDto authRequestDto) {
         User user = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), authRequestDto.getEmail());
-        if (user != null && user.getSenha().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
+        if (user != null && user.getPassword().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
             try {
-                String token = TokenUteis.generateToken(user.getNome(), user.getRoles(), duration, issuer);
+                String token = TokenUteis.generateToken(user.getName(), user.getRoles(), duration, issuer);
                 return Response.ok(new AuthResponseDto(token)).build();
             } catch (Exception e) {
                 return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
@@ -76,9 +76,9 @@ public class UserResource {
     @POST
     @RolesAllowed({"ADIMIN", "USER"})
     @SecurityRequirement(name = "Authorization")
-    public Response insertUserPersonRest(@RequestBody @Valid UserInsertDto userDTO) {
+    public Response insertUserRest(@RequestBody @Valid UserInsertDto userDTO) {
         try {
-            User user = userMapper.toUser(userDTO);
+            User user = UserMapper.INSTANCE.toUser(userDTO);
             userServices.insertUser(user);
         } catch (IllegalArgumentException e) {
             return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
@@ -93,9 +93,9 @@ public class UserResource {
     @Path("/{cpf}")
     @RolesAllowed({"ADIMIN", "USER"})
     @SecurityRequirement(name = "Authorization")
-    public Response updateUserPersonRest(@PathParam("cpf") @NotEmpty(message = "Informe o CPF de alteração") String cpf, @Valid @RequestBody UserUpdateto userDTO) {
+    public Response updateUserRest(@PathParam("cpf") @NotEmpty(message = "Informe o CPF de alteração") String cpf, @Valid @RequestBody UserUpdateto userDTO) {
         try {
-            User user = userMapper.toUser(userDTO);
+            User user = UserMapper.INSTANCE.toUser(userDTO);
             userServices.updateUser(cpf, user);
         } catch (IllegalArgumentException e) {
 
@@ -109,18 +109,18 @@ public class UserResource {
     @DELETE
     @RolesAllowed({"ADIMIN"})
     @SecurityRequirement(name = "Authorization")
-    public void deleteUserPersonRest(@QueryParam("cpf") String cpf) {
+    public void deleteUserRest(@QueryParam("cpf") String cpf) {
         userServices.deleteUser(cpf);
     }
 
     @GET
     @RolesAllowed({"ADIMIN", "USER"})
     @SecurityRequirement(name = "Authorization")
-    public Response findUserPersonRest(@QueryParam("cpf") String cpf, @QueryParam("email") String email) {
+    public Response findUserRest(@QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         try {
             User user = userServices.findUserByCpfOrEmail(cpf, email);
 
-            UserReturnDto userReturnDto = userMapper.toDto(user);
+            UserReturnDto userReturnDto = UserMapper.INSTANCE.toDto(user);
             return Response.ok().entity(userReturnDto).build();
 
         } catch (NoResultException e) {

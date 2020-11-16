@@ -2,26 +2,24 @@ package br.com.matheusCalaca.user.model.DTO;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 public class UserUpdateto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String nome;
+    private String name;
 
     private String lastname;
 
-    private Date dataNascimento;
+    private Date dateOfBirth;
 
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLastname() {
@@ -32,12 +30,12 @@ public class UserUpdateto implements Serializable {
         this.lastname = lastname;
     }
 
-    public Date getDataNascimento() {
-        return dataNascimento;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
 
