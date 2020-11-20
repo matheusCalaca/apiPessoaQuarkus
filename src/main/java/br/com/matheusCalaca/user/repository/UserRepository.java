@@ -1,23 +1,19 @@
 package br.com.matheusCalaca.user.repository;
 
-import br.com.matheusCalaca.user.model.UserPerson;
+import br.com.matheusCalaca.user.model.User;
 
 public interface UserRepository {
 
-    public UserPerson insertUser(UserPerson person);
+    User insertUser(User user);
 
 
-    public void updateUser(Long id, UserPerson person);
+    User updateUser(User user);
 
 
-    public void deleteUser(Long id);
+    void deleteUser(Long id);
+
+    User findUserByCpf(String cpf);
 
 
-    public UserPerson findUserById(Integer id);
-
-
-    public UserPerson findUserByCpf(String cpf);
-
-
-    public UserPerson findUserByEmail(String email);
+    User findUserByEmail(String email);
 }

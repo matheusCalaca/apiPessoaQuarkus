@@ -1,11 +1,11 @@
 package br.com.matheusCalaca.user;
 
-import br.com.matheusCalaca.user.model.UserPerson;
-import br.com.matheusCalaca.user.services.UserServices;
-import org.apache.http.HttpStatus;
-
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,58 +18,114 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import br.com.matheusCalaca.user.JWT.PBKDF2Encoder;
+import br.com.matheusCalaca.user.JWT.TokenUteis;
+import br.com.matheusCalaca.user.model.DTO.AuthRequestDto;
+import br.com.matheusCalaca.user.model.DTO.AuthResponseDto;
+import br.com.matheusCalaca.user.model.DTO.UserInsertDto;
+import br.com.matheusCalaca.user.model.DTO.UserReturnDto;
+import br.com.matheusCalaca.user.model.DTO.UserUpdateto;
+import br.com.matheusCalaca.user.model.User;
+import br.com.matheusCalaca.user.model.mapper.UserMapper;
+import br.com.matheusCalaca.user.services.UserServices;
+import org.apache.http.HttpStatus;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+
 @Path("/user")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@SecurityScheme(securitySchemeName = "Authorization", type = SecuritySchemeType.HTTP, scheme = "bearer")
 public class UserResource {
 
     @Inject
     UserServices userServices;
+    @Inject
+    PBKDF2Encoder passwordEncoder;
+
+//    @Inject
+//    UserMapper userMapper;
+
+    @ConfigProperty(name = "br.com.matheuscalaca.quarkusjwt.jwt.duration")
+    public Long duration;
+    @ConfigProperty(name = "mp.jwt.verify.issuer")
+    public String issuer;
+
+    @PermitAll
+    @POST
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(@Valid AuthRequestDto authRequestDto) {
+        User user = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), authRequestDto.getEmail());
+        if (user != null && user.getPassword().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
+            try {
+                String token = TokenUteis.generateToken(user.getName(), user.getRoles(), duration, issuer);
+                return Response.ok(new AuthResponseDto(token)).build();
+            } catch (Exception e) {
+                return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
+            }
+        } else {
+            return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
+        }
+    }
+
 
     @POST
-    public Response insertUserPersonRest(@Valid UserPerson person) {
+    @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
+    public Response insertUserRest(@RequestBody @Valid UserInsertDto userDTO) {
         try {
-            userServices.insertUser(person);
-        }
-        catch (IllegalArgumentException e) {
-
+            User user = UserMapper.INSTANCE.toUser(userDTO);
+            userServices.insertUser(user);
+        } catch (IllegalArgumentException e) {
             return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
         return Response.ok().build();
     }
 
+
     @PUT
-    @Path("/{id}")
-    public void updateUserPersonRest(@PathParam("id") Long id, @Valid UserPerson person) {
-        userServices.updateUser(id, person);
+    @Path("/{cpf}")
+    @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
+    public Response updateUserRest(@PathParam("cpf") @NotEmpty(message = "Informe o CPF de alteração") String cpf, @Valid @RequestBody UserUpdateto userDTO) {
+        try {
+            User user = UserMapper.INSTANCE.toUser(userDTO);
+            userServices.updateUser(cpf, user);
+        } catch (IllegalArgumentException e) {
+
+            return Response.status(HttpStatus.SC_UNPROCESSABLE_ENTITY).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+        return Response.ok().build();
     }
 
     @DELETE
-    @Path("/{id}")
-    public void deleteUserPersonRest(@PathParam("id") Long id) {
-        userServices.deleteUser(id);
+    @RolesAllowed({"ADIMIN"})
+    @SecurityRequirement(name = "Authorization")
+    public void deleteUserRest(@QueryParam("cpf") String cpf) {
+        userServices.deleteUser(cpf);
     }
 
     @GET
-    public Response findUserPersonRest(@QueryParam("id") Integer id, @QueryParam("cpf") String cpf, @QueryParam("email") String email) {
-        UserPerson user = null;
-        boolean idIsNotNull = id != null;
-        boolean cpfIsNotEmpty = cpf != null && !cpf.isEmpty();
-        boolean emailIsNotEmpty = email != null && !email.isEmpty();
-        UserPerson person = null;
+    @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
+    public Response findUserRest(@QueryParam("cpf") String cpf, @QueryParam("email") String email) {
+        try {
+            User user = userServices.findUserByCpfOrEmail(cpf, email);
 
+            UserReturnDto userReturnDto = UserMapper.INSTANCE.toDto(user);
+            return Response.ok().entity(userReturnDto).build();
 
-        if (idIsNotNull) {
-            person = userServices.findUserById(id);
-        } else if (cpfIsNotEmpty) {
-            person = userServices.findUserByCpf(cpf);
-        } else if (emailIsNotEmpty) {
-            person = userServices.findUserByEmail(email);
+        } catch (NoResultException e) {
+            return Response.status(HttpStatus.SC_NOT_FOUND).entity("Cadastro Não localizado").build();
         }
 
-        return Response.ok().entity(person).build();
     }
 }
