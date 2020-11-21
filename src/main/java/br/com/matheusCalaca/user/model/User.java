@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-@Entity(name = "USER")
+@Entity(name = "USUARIO")
 public class User extends PanacheEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
