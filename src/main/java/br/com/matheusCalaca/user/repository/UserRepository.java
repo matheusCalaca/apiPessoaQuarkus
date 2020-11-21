@@ -9,7 +9,6 @@ public interface UserRepository {
 
     User updateUser(User user);
 
-
     void deleteUser(Long id);
 
     User findUserByCpf(String cpf);

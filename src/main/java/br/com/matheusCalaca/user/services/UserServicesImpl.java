@@ -3,6 +3,7 @@ package br.com.matheusCalaca.user.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -61,7 +62,7 @@ public class UserServicesImpl implements UserServices {
             throw new IllegalArgumentException("Data Nascimento invalido!");
         }
         if (isInvalidPassword) {
-            throw new IllegalArgumentException("Senha invalida!");
+            throw new IllegalArgumentException("Senha invalida! A senha deve ter no minimo de 8 caracter, pelo menos uma letra maiúsca, pelo menos uma letra minúscula, e um caracter especial");
         }
     }
 

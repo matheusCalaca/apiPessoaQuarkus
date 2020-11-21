@@ -80,7 +80,7 @@ public class UserResource {
     @POST
     @Operation(
             summary = "Criar um usuario ",
-            description = "Método responsável, por criar o usuario, atualmente a data de não está funcionando passar null "
+            description = "Método responsável, por criar o usuario, atualmente a data de não está funcionando passar null. Tipo de regras [USER, ADMIN]"
     )
     public Response insertUserRest(@RequestBody @Valid UserInsertDto userDTO) {
         try {

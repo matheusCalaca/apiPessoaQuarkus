@@ -2,9 +2,12 @@ package br.com.matheusCalaca.user.model.DTO;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import br.com.matheusCalaca.user.model.RoleEnum;
 
 public class UserInsertDto implements Serializable {
 
@@ -30,6 +33,8 @@ public class UserInsertDto implements Serializable {
     @NotNull(message = "Campo senha não pode ser NULL")
     @NotEmpty
     private String password;
+
+    private List<RoleEnum> roles;
 
     public String getName() {
         return name;
@@ -77,5 +82,13 @@ public class UserInsertDto implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<RoleEnum> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleEnum> roles) {
+        this.roles = roles;
     }
 }
