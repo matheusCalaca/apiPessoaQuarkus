@@ -25,17 +25,17 @@ public class KafkaRest {
     @Channel("user-stream")
     Emitter<User> mensagemEmitter;
 
-    @POST
-    public void insertMensagemKafka(User user) {
-        mensagemEmitter.send(user);
-    }
-
-
-    @GET
-    @Path("/stream")
-    @Produces(MediaType.SERVER_SENT_EVENTS)
-    @SseElementType("text/plain")
-    public Publisher<User> stream() {
-        return mensagemConsumer;
-    }
+//    @POST
+//    public void insertMensagemKafka(User user) {
+//        mensagemEmitter.send(user);
+//    }
+//
+//
+//    @GET
+//    @Path("/stream")
+//    @Produces(MediaType.SERVER_SENT_EVENTS)
+//    @SseElementType("text/plain")
+//    public Publisher<User> stream() {
+//        return mensagemConsumer;
+//    }
 }
