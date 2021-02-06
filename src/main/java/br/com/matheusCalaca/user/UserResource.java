@@ -67,7 +67,7 @@ public class UserResource {
         User user = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), authRequestDto.getEmail());
         if (user != null && user.getPassword().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
             try {
-                String token = TokenUteis.generateToken(user.getName(), user.getRoles(), duration, issuer);
+                String token = TokenUteis.generateToken(user.getCpf(), user.getRoles(), duration, issuer);
                 return Response.ok(new AuthResponseDto(token)).build();
             } catch (Exception e) {
                 return Response.status(HttpStatus.SC_UNAUTHORIZED).build();

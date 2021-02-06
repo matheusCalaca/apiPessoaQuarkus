@@ -21,14 +21,14 @@ public class TokenUteis implements Serializable {
     /**
      * Gera o token para o usuario logado
      *
-     * @param username
+     * @param cpf
      * @param roles (regra de acesso)
      * @param duration (duração do token)
      * @param issuer (Chave privada)
      * @return
      * @throws Exception
      */
-    public static String generateToken(String username, List<RoleEnum> roles, Long duration, String issuer) throws Exception {
+    public static String generateToken(String cpf, List<RoleEnum> roles, Long duration, String issuer) throws Exception {
         final String privateKeyLocation = "/privatekey.pem";
         PrivateKey privateKey = readPrivateKey(privateKeyLocation);
 
@@ -39,7 +39,7 @@ public class TokenUteis implements Serializable {
         for (RoleEnum role : roles) groups.add(role.getName());
 
         claimsBuilder.issuer(issuer);
-        claimsBuilder.subject(username);
+        claimsBuilder.subject(cpf);
         claimsBuilder.issuedAt(currentTimeInSecs);
         claimsBuilder.expiresAt(currentTimeInSecs + duration);
         claimsBuilder.groups(groups);
