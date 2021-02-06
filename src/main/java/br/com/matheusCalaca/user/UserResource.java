@@ -24,6 +24,7 @@ import br.com.matheusCalaca.user.JWT.PBKDF2Encoder;
 import br.com.matheusCalaca.user.JWT.UteisToken;
 import br.com.matheusCalaca.user.model.DTO.AuthRequestDto;
 import br.com.matheusCalaca.user.model.DTO.AuthResponseDto;
+import br.com.matheusCalaca.user.model.DTO.UserCPFReturnDto;
 import br.com.matheusCalaca.user.model.DTO.UserInsertDto;
 import br.com.matheusCalaca.user.model.DTO.UserReturnDto;
 import br.com.matheusCalaca.user.model.DTO.UserUpdateto;
@@ -170,7 +171,29 @@ public class UserResource {
             return Response.ok().entity(userReturnDto).build();
 
         } catch (NoResultException e) {
-            return Response.status(HttpStatus.SC_NOT_FOUND).entity("Cadastro Não localizado").build();
+            return Response.status(HttpStatus.SC_NOT_FOUND).entity("Não localizado usuario por token ").build();
+        }
+
+    }
+
+    @GET
+    @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
+    @Operation(
+            summary = "Retorna CPF token ",
+            description = "Método responsável, por retornar o CPF "
+    )
+    @Path("/token/cpf")
+    public Response findCPFByToken(@Context HttpHeaders headers) {
+        try {
+
+            String token = UteisToken.getTokenHeader(headers);
+            String cpf = UteisToken.getCPFByToken(token);
+
+            return Response.ok().entity(new UserCPFReturnDto(cpf)).build();
+
+        } catch (NoResultException e) {
+            return Response.status(HttpStatus.SC_NOT_FOUND).entity("Não localizado CPF ").build();
         }
 
     }
