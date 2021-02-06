@@ -15,11 +15,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.com.matheusCalaca.user.JWT.PBKDF2Encoder;
-import br.com.matheusCalaca.user.JWT.TokenUteis;
+import br.com.matheusCalaca.user.JWT.UteisToken;
 import br.com.matheusCalaca.user.model.DTO.AuthRequestDto;
 import br.com.matheusCalaca.user.model.DTO.AuthResponseDto;
 import br.com.matheusCalaca.user.model.DTO.UserInsertDto;
@@ -67,7 +69,7 @@ public class UserResource {
         User user = userServices.findUserByCpfOrEmail(authRequestDto.getIdentify(), authRequestDto.getEmail());
         if (user != null && user.getPassword().equals(passwordEncoder.encode(authRequestDto.getPassword()))) {
             try {
-                String token = TokenUteis.generateToken(user.getCpf(), user.getRoles(), duration, issuer);
+                String token = UteisToken.generateToken(user.getCpf(), user.getRoles(), duration, issuer);
                 return Response.ok(new AuthResponseDto(token)).build();
             } catch (Exception e) {
                 return Response.status(HttpStatus.SC_UNAUTHORIZED).build();
@@ -138,6 +140,31 @@ public class UserResource {
     public Response findUserRest(@QueryParam("cpf") String cpf, @QueryParam("email") String email) {
         try {
             User user = userServices.findUserByCpfOrEmail(cpf, email);
+
+            UserReturnDto userReturnDto = UserMapper.INSTANCE.toDto(user);
+            return Response.ok().entity(userReturnDto).build();
+
+        } catch (NoResultException e) {
+            return Response.status(HttpStatus.SC_NOT_FOUND).entity("Cadastro Não localizado").build();
+        }
+
+    }
+
+    @GET
+    @RolesAllowed({"ADIMIN", "USER"})
+    @SecurityRequirement(name = "Authorization")
+    @Operation(
+            summary = "Buscar um usuario ",
+            description = "Método responsável, por Buscar os dados de um  usuário, Fazer pelo token informado "
+    )
+    @Path("/token")
+    public Response findUserByTokenRest(@Context HttpHeaders headers) {
+        try {
+
+            String token = UteisToken.getTokenHeader(headers);
+            String cpf = UteisToken.getCPFByToken(token);
+
+            User user = userServices.findUserByCpfOrEmail(cpf, null);
 
             UserReturnDto userReturnDto = UserMapper.INSTANCE.toDto(user);
             return Response.ok().entity(userReturnDto).build();
