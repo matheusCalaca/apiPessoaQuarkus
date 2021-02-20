@@ -7,12 +7,14 @@ public class AuthResponseDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String token;
+    private Long duration;
 
     public AuthResponseDto() {
     }
 
-    public AuthResponseDto(String token) {
+    public AuthResponseDto(String token, Long duration) {
         this.token = token;
+        this.duration = duration;
     }
 
     public String getToken() {
@@ -21,5 +23,13 @@ public class AuthResponseDto implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
     }
 }

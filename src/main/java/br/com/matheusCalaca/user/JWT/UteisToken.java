@@ -39,15 +39,15 @@ public class UteisToken implements Serializable {
         PrivateKey privateKey = readPrivateKey(privateKeyLocation);
 
         JwtClaimsBuilder claimsBuilder = Jwt.claims();
-        long currentTimeInSecs = currentTimeInSecs();
+
 
         Set<String> groups = new HashSet<>();
         for (RoleEnum role : roles) groups.add(role.getName());
 
         claimsBuilder.issuer(issuer);
         claimsBuilder.subject(cpf);
-        claimsBuilder.issuedAt(currentTimeInSecs);
-        claimsBuilder.expiresAt(currentTimeInSecs + duration);
+        claimsBuilder.issuedAt(currentTimeInSecs());
+        claimsBuilder.expiresAt(duration);
         claimsBuilder.groups(groups);
 
         return claimsBuilder.jws().signatureKeyId(privateKeyLocation).sign(privateKey);
